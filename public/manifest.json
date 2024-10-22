@@ -1,0 +1,15 @@
+{
+    "short_name": "Mochi APP",
+    "name": "Mochi APP",
+    "icons": [
+        {
+            "src": "/logo.png",
+            "sizes": "390x390",
+            "type": "image/png"
+        }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#333333",
+    "background_color": "#efefef"
+}

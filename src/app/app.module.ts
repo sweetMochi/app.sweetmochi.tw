@@ -13,6 +13,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
 	declarations: [
@@ -44,7 +45,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 		MatFormFieldModule
 	],
 	providers: [
-		provideAnimationsAsync()
+		provideAnimationsAsync(),
+		provideHttpClient(),
 	],
 	bootstrap: [AppComponent]
 })
