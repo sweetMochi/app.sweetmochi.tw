@@ -20,11 +20,12 @@ export type UrlValidationErrorsType = 'invalidUrl';
  *
  *      invalidYouTubeId: 無效的 YouTube ID
  *      invalidYouTubeUrl: 無效的 YouTube 網址
- *      youTubeThumbnailUseHq: YouTube 影片縮圖使用 HQ 版本
+ *      youTubeThumbnailUseStandard: YouTube 影片縮圖使用 standard 版本
+ *      youTubeThumbnailUseHigh: YouTube 影片縮圖使用 high 版本
  *      YouTubeIsNotAvailable: YouTube 目前無法使用
  *
  */
-export type YoutubeValidationErrorsType = 'invalidYouTubeId' | 'invalidYouTubeUrl' | 'youTubeThumbnailUseHq' | 'YouTubeIsNotAvailable'
+export type YoutubeValidationErrorsType = 'invalidYouTubeId' | 'invalidYouTubeUrl' | 'youTubeThumbnailUseStandard' | 'youTubeThumbnailUseHigh' | 'YouTubeIsNotAvailable'
 
 
 /**

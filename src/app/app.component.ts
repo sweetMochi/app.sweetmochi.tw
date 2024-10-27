@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { filter, Subject, takeUntil } from 'rxjs';
-import { YOUTUBE_HOST_LIST } from '../base/const';
-import { UrlValidationErrorsType, ValidationErrorsType, YoutubeValidationErrorsType } from '../base/error.type';
-import { ValidatorService } from '../base/validator.service';
-import { YoutubeService } from '../base/youtube.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
+import { httpService } from '../base/service/http.service';
+import { WidgetService } from '../base/service/widget.service';
+import { NavList } from '../base/type/base.type';
 
 
 
@@ -15,99 +15,56 @@ import { YoutubeService } from '../base/youtube.service';
 })
 export class AppComponent implements OnInit {
 
-	/** 取消訂閱 */
-	private unsubscribe = new Subject();
 
-	/** 圖片路徑 */
-	imgSrc = '';
+	/** 側欄元件 */
+	@ViewChild(MatSidenav)
+	sidenav!: MatSidenav;
 
-	/** 顯示圖片 */
-	imgShow = false;
+	/** 當前路徑 */
+	path = '';
 
-	/** 驗證表單 */
-	formGroup = this.formBuilder.group(
+	/** 導覽列 */
+	nav: NavList[] = [
 		{
-			/** 網址 */
-			url: [
-				'',
-				[Validators.required, this.validatorService.url, this.validatorService.youTubeUrl],
-				[this.validatorService.youTubeVideo]
-			]
-		},
-		{
-			updateOn: 'submit'
+			path: '/youtube-thumbnail',
+			icon: 'image',
+			name: 'YouTube Thumbnail'
 		}
-	);
+	];
+
 
 	constructor(
-		private youtube: YoutubeService,
-		private formBuilder: FormBuilder,
-		private validatorService: ValidatorService,
+		private router: Router,
+		private http: httpService,
+        private widget: WidgetService
 	) {}
 
 
 	ngOnInit(): void {
 
-		// 關注表單狀態變更事件
-		this.formGroup.statusChanges.pipe(
-			// 關注取消訂閱事件
-			takeUntil(this.unsubscribe),
-			// 僅驗證通過與為通過狀態
-			filter( data => (data === 'INVALID' || data === 'VALID'))
-		).subscribe(data => {
-
-			// 取得影片 ID
-			let id = this.youtube.id(this.formGroup.value.url || '');
-
-			// 驗證通過
-			if (data === 'VALID') {
-				// 使用最高解析度預覽圖
-				this.imgSrc = this.youtube.thumbnailUrl(id);
-			} else {
-
-				// 如果為使用 HQ 預覽圖錯誤
-				if (this.formError('youTubeThumbnailUseHq')) {
-
-					this.formGroup.controls.url.setErrors(null);
-					this.imgSrc = this.youtube.thumbnailUrl(id, 'hqdefault');
-				} else {
-					this.clearImg();
-				}
-
-			}
-
+		// 取得 API Key 並進行例外處理
+		this.http.apiKey().catch(() => {
+			this.widget.snackBar('Init error');
 		});
+
+		// 關注路由事件
+		this.router.events.pipe(
+			filter((e): e is NavigationEnd => e instanceof NavigationEnd)
+		).subscribe(() => {
+			// 關閉導覽列
+			this.sidenav.close();
+			// 取得當前網址
+			this.path = this.router.url;
+		});
+
 	}
 
 
 	/**
-	 * 驗證表單錯誤訊息
-	 * @param type 錯誤類型
+	 * 開關側欄
 	 */
-	formError(type: ValidationErrorsType | UrlValidationErrorsType | YoutubeValidationErrorsType): string {
-		return this.formGroup.controls.url.getError(type);
-	}
-
-
-	/**
-	 * 顯示 YouTube 網域列表
-	 */
-	displayYoutubeHostList(): string {
-		return YOUTUBE_HOST_LIST.join(', ');
-	}
-
-
-	/**
-	 * 清空圖片
-	 */
-	clearImg(): void {
-		this.imgSrc = '';
-	}
-
-
-	ngOnDestroy(): void {
-		this.unsubscribe.next(null);
-		this.unsubscribe.complete();
+	toggleAside(): void {
+		this.sidenav.toggle();
 	}
 
 

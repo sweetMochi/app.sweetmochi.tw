@@ -1,4 +1,7 @@
 
+/** API 網址 */
+export const API_URL = 'https://app.sweetmochi.tw/api/';
+
 /** YouTube 短網址 */
 export const YOUTUBE_SHORT_URL = 'youtu.be';
 

@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,14 +13,19 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient } from '@angular/common/http';
+import { PageYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-thumbnail.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
+
 
 @NgModule({
 	declarations: [
-		AppComponent
+		AppComponent,
+		PageYoutubeThumbnailComponent
 	],
 	imports: [
 		BrowserModule,
@@ -27,6 +35,7 @@ import { provideHttpClient } from '@angular/common/http';
 		MatButtonModule,
 		MatToolbarModule,
 		MatSidenavModule,
+		MatSnackBarModule,
 		MatButtonModule,
 		MatListModule,
 		MatInputModule,
@@ -38,6 +47,7 @@ import { provideHttpClient } from '@angular/common/http';
 		MatButtonModule,
 		MatToolbarModule,
 		MatSidenavModule,
+		MatSnackBarModule,
 		MatButtonModule,
 		MatListModule,
 		MatInputModule,

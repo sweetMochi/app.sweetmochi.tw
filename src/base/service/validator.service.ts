@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { URL_REGEX, YOUTUBE_HOST_LIST } from './const';
-import { UrlValidationErrors, YoutubeValidationErrors } from './error.type';
-import { UrlService } from './url.service';
+import { URL_REGEX, YOUTUBE_HOST_LIST } from '../const';
+import { UrlValidationErrors, YoutubeValidationErrors } from '../type/error.type';
 import { YoutubeService } from './youtube.service';
+import { httpService } from './http.service';
 
 
 
@@ -16,7 +16,7 @@ import { YoutubeService } from './youtube.service';
 export class ValidatorService {
 
 	constructor(
-        private urlService: UrlService,
+        private httpService: httpService,
         private youTubeService: YoutubeService
 	) {}
 
@@ -54,7 +54,7 @@ export class ValidatorService {
             }
 
             // 取得建構網址
-            let url = this.urlService.rebuild(value);
+            let url = this.httpService.url(value);
 
             // 是否為 Youtube 的網域
             let validUrl = YOUTUBE_HOST_LIST.includes(url.hostname);
@@ -79,23 +79,33 @@ export class ValidatorService {
 
             try {
 
-                if (await this.youTubeService.thumbnailTest(id) ) {
-                    return null;
+                let key = await this.youTubeService.thumbnailCheck(id);
+
+                let error: YoutubeValidationErrors | YoutubeValidationErrors<boolean> | null = { 'invalidYouTubeId': 'YouTube video not available' }
+
+                switch (key) {
+
+                    // 如果是最高解析度
+                    case 'maxres':
+                        error = null;
+                        break;
+
+                    // 如果是標準畫質
+                    case 'standard':
+                        error = { 'youTubeThumbnailUseStandard': true };
+                        break;
+
+                    // 如果是標準畫質
+                    case 'high':
+                        error = { 'youTubeThumbnailUseHigh': true };
+                        break;
+
                 }
-
-                if (await this.youTubeService.thumbnailTest(id, 'hqdefault')) {
-
-                    // 錯誤訊息
-                    let error: YoutubeValidationErrors<boolean> = { 'youTubeThumbnailUseHq': true };
-
-                    return error;
-                }
-
-                // 錯誤訊息
-                let error: YoutubeValidationErrors = { 'invalidYouTubeId': 'YouTube video not available' };
 
                 return error;
+
             } catch (error) {
+
 
                 // 錯誤訊息
                 let msg: YoutubeValidationErrors = { 'YouTubeIsNotAvailable': 'YouTube is not available' };
