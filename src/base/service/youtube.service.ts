@@ -2,9 +2,9 @@
 
 import { Injectable } from '@angular/core';
 import { catchError, EMPTY } from 'rxjs';
-import { YOUTUBE_SHORT_URL } from '../const';
+import { YOUTUBE_API, YOUTUBE_THUMBNAIL_HOST, YOUTUBE_URL_SHORT } from '../const/youtube.const';
 import { YouTubeThumbnailList } from '../type/youtube.type';
-import { httpService } from './http.service';
+import { HttpService } from './http.service';
 import { WidgetService } from './widget.service';
 
 
@@ -17,9 +17,6 @@ import { WidgetService } from './widget.service';
 })
 export class YoutubeService {
 
-
-    /** Youtube API */
-    readonly youtubeApi = 'https://youtube.googleapis.com/youtube/v3/videos';
 
     /** 預覽圖排序 */
     readonly thumbnailList: YouTubeThumbnailList[] = ['maxres', 'standard', 'high'];
@@ -36,7 +33,7 @@ export class YoutubeService {
 
 
     constructor(
-        private http: httpService,
+        private http: HttpService,
         private widget: WidgetService
     ) { }
 
@@ -50,7 +47,7 @@ export class YoutubeService {
         let url = this.http.url(val);
 
         // 如果為短網址參數
-        if (url.hostname === YOUTUBE_SHORT_URL) {
+        if (url.hostname === YOUTUBE_URL_SHORT) {
             // 從第一層路徑取得影片 ID
             id = url.pathname.split('/')[1];
         } else {
@@ -74,7 +71,7 @@ export class YoutubeService {
             return '';
         }
 
-        return `https://i.ytimg.com/vi/${id}/${this.thumbnailMap[size]}.jpg`;
+        return `${YOUTUBE_THUMBNAIL_HOST}/${id}/${this.thumbnailMap[size]}.jpg`;
 
     }
 
@@ -82,8 +79,8 @@ export class YoutubeService {
     /**
      * 取得影片暫存資料
      */
-    getVideoSave(): GoogleApiYouTubeVideoResource {
-        return this.videoSave || null;
+    getVideoSave(): GoogleApiYouTubeVideoResource | null {
+        return this.videoSave;
     }
 
 
@@ -106,7 +103,7 @@ export class YoutubeService {
                 }
             );
 
-            let url = new URL(`${this.youtubeApi}?${params}`);
+            let url = new URL(`${YOUTUBE_API}?${params}`);
 
             this.http.get(url.toString()).pipe(
                 catchError(

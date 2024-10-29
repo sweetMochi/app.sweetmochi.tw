@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, EMPTY, retry, throwError } from 'rxjs';
-import { API_URL } from '../const';
 import { ApiKey } from '../type/base.type';
+import { API_URL, HTTP_RETRY_TIMES } from '../const/base.const';
 
 
 
@@ -12,14 +12,12 @@ import { ApiKey } from '../type/base.type';
 @Injectable({
     providedIn: 'root'
 })
-export class httpService {
+export class HttpService {
 
     /** 儲存 API Key */
     private apiKeySave = '';
 
-    /**
-     * http 正則表達，開頭為 http 或 https
-     */
+    /** http 正則表達，開頭為 http 或 https */
     readonly httpRegex = '^https?://';
 
 
@@ -58,7 +56,7 @@ export class httpService {
             }
 
             // 沒有的話則嘗試取得 API Key
-            this.get<ApiKey>(API_URL).pipe(
+            this.get<ApiKey>(`${API_URL}/`).pipe(
                 // 例外處理
                 catchError(
                     (error: HttpErrorResponse) => {
@@ -87,7 +85,7 @@ export class httpService {
                 responseType: 'json'
             }
         ).pipe(
-            retry(3),
+            retry(HTTP_RETRY_TIMES),
             catchError(this.handleError)
         );
     }

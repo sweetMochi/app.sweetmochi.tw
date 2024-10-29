@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SNACK_BAR_FADEOUT_TIME } from '../const/base.const';
 
 
 
@@ -28,7 +29,7 @@ export class WidgetService {
 			btnName,
 			{
 				horizontalPosition: 'center',
-				duration: 3000
+				duration: SNACK_BAR_FADEOUT_TIME
 			}
 		);
 	}

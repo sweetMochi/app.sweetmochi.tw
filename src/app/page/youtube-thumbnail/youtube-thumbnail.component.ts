@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, NgForm, Validators } from '@angular/forms';
 import { filter, Subject, takeUntil } from 'rxjs';
-import { UrlValidationErrorsType, ValidationErrorsType, YoutubeValidationErrorsType } from '../../../base/type/error.type';
+import { YOUTUBE_URL_SHORT } from '../../../base/const/youtube.const';
 import { ValidatorService } from '../../../base/service/validator.service';
+import { WidgetService } from '../../../base/service/widget.service';
 import { YoutubeService } from '../../../base/service/youtube.service';
+import { UrlValidationErrorsType, ValidationErrorsType, YoutubeValidationErrorsType } from '../../../base/type/error.type';
+import { YouTubeThumbnailList } from '../../../base/type/youtube.type';
 
 
 
@@ -20,14 +23,17 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 	/** 取消訂閱 */
 	private unsubscribe = new Subject();
 
+	@ViewChild('formDirective')
+	formDirective!: NgForm;
+
 	/** 圖片路徑 */
 	imgSrc = '';
 
-	/** 圖片標題 */
-	imgTitle = '';
+	/** 短網址 */
+	shortUrl = '';
 
-	/** 顯示圖片 */
-	imgShow = false;
+	/** 標題名稱 */
+	videoTitle = '';
 
 	/** 驗證表單 */
 	formGroup = this.formBuilder.group(
@@ -46,6 +52,7 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 
 
 	constructor(
+		private widget: WidgetService,
 		private youtube: YoutubeService,
 		private formBuilder: FormBuilder,
 		private validatorService: ValidatorService
@@ -67,30 +74,44 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 
 			// 驗證通過
 			if (data === 'VALID') {
+
 				// 使用最高解析度預覽圖
-				this.imgSrc = this.youtube.thumbnailUrl(id);
-				this.imgTitle = this.youtube.getVideoSave().snippet.title;
+				this.initVideoInfo(id);
+
 			} else {
 
+				// 如果圖片使用標準畫質
 				if (this.formError('youTubeThumbnailUseStandard')) {
 					this.formGroup.controls.url.setErrors(null);
-					this.imgSrc = this.youtube.thumbnailUrl(id, 'standard');
-					this.imgTitle = this.youtube.getVideoSave().snippet.title;
+					this.initVideoInfo(id, 'standard');
 					return;
 				}
 
+				// 如果圖片使用高畫質
 				if (this.formError('youTubeThumbnailUseHigh')) {
 					this.formGroup.controls.url.setErrors(null);
-					this.imgSrc = this.youtube.thumbnailUrl(id, 'high');
-					this.imgTitle = this.youtube.getVideoSave().snippet.title;
+					this.initVideoInfo(id, 'high');
 					return;
 				}
 
-				this.clearImg();
+				// 清除當前圖片
+				this.imgSrc = '';
 
 			}
 
 		});
+	}
+
+
+	/**
+	 * 初始畫影片資料
+	 * @param id 影片 ID
+	 * @param size 影片預覽圖大小
+	 */
+	initVideoInfo(id: string, size?: YouTubeThumbnailList): void {
+		this.imgSrc = this.youtube.thumbnailUrl(id, size);
+		this.shortUrl = `${YOUTUBE_URL_SHORT}/${id}`;
+		this.videoTitle = this.youtube.getVideoSave()?.snippet.title || '';
 	}
 
 
@@ -108,6 +129,23 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 	 */
 	clearImg(): void {
 		this.imgSrc = '';
+		// 重置表單狀態
+		this.formGroup.reset();
+		// 移除清空時產生的錯誤訊息
+		this.formGroup.controls.url.setErrors(null);
+	}
+
+
+	/**
+	 * 使用者複製功能
+	 * @param txt 文字
+	 */
+	userCopy(txt: string): void {
+		if (!txt) {
+			return;
+		}
+		navigator.clipboard.writeText(txt);
+		this.widget.snackBar('Copy to clipboard!');
 	}
 
 

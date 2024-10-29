@@ -10,13 +10,24 @@ form {
 .card {
     max-width: 1280px;
     margin: 0 auto;
+    margin-bottom: 20px;
 }
 
 .form-field {
     width: 100%;
 }
 
+:host ::ng-deep .form-field-nohint {
+    .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+    }
+}
+
 .card img {
     width: 100%;
-    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.copy {
+    cursor: pointer;
 }

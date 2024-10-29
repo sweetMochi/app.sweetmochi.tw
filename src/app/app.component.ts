@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
-import { httpService } from '../base/service/http.service';
+import { HttpService } from '../base/service/http.service';
 import { WidgetService } from '../base/service/widget.service';
 import { NavList } from '../base/type/base.type';
 
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		private http: httpService,
+		private http: HttpService,
         private widget: WidgetService
 	) {}
 

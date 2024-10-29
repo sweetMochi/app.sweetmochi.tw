@@ -3,7 +3,7 @@
         <form [formGroup]="formGroup">
             <div class="form">
                 <mat-form-field class="form-field" appearance="outline">
-                    <mat-label>Search YouTube Thumbnail</mat-label>
+                    <mat-label>Search YouTube thumbnail</mat-label>
                     <input
                         matInput
                         type="url"
@@ -34,13 +34,44 @@
         </form>
     </mat-card-content>
 
-    @if (imgSrc) {
-        <img
-            mat-card-image
-            [src]="imgSrc"
-            [title]="imgTitle"
-            [alt]="imgTitle"
-        />
-    }
-
 </mat-card>
+
+@if (imgSrc) {
+    <mat-card class="card" appearance="outlined">
+
+        @if (imgSrc) {
+            <img
+                mat-card-image
+                [src]="imgSrc"
+                [alt]="videoTitle"
+            />
+        }
+
+        <mat-card-content>
+            @if (shortUrl) {
+                <mat-form-field class="form-field" appearance="outline">
+                    <mat-label>YouTube short url</mat-label>
+                    <input
+                        matInput
+                        readonly
+                        type="url"
+                        [value]="shortUrl"
+                    />
+                    <mat-icon matSuffix class="copy" (click)="userCopy(shortUrl)">content_copy</mat-icon>
+                </mat-form-field>
+            }
+            @if (videoTitle) {
+                <mat-form-field class="form-field form-field-nohint" appearance="outline">
+                    <mat-label>YouTube video title</mat-label>
+                    <input
+                        matInput
+                        readonly
+                        type="url"
+                        [value]="videoTitle"
+                    />
+                    <mat-icon matSuffix class="copy" (click)="userCopy(videoTitle)">content_copy</mat-icon>
+                </mat-form-field>
+            }
+        </mat-card-content>
+    </mat-card>
+}

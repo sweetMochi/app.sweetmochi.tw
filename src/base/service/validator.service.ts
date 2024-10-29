@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { URL_REGEX, YOUTUBE_HOST_LIST } from '../const';
+import { YOUTUBE_HOST_LIST } from '../const/youtube.const';
 import { UrlValidationErrors, YoutubeValidationErrors } from '../type/error.type';
 import { YoutubeService } from './youtube.service';
-import { httpService } from './http.service';
+import { HttpService } from './http.service';
+import { URL_REGEX } from '../const/base.const';
+import { WidgetService } from './widget.service';
 
 
 
@@ -16,7 +18,8 @@ import { httpService } from './http.service';
 export class ValidatorService {
 
 	constructor(
-        private httpService: httpService,
+        private widget: WidgetService,
+        private httpService: HttpService,
         private youTubeService: YoutubeService
 	) {}
 
@@ -106,9 +109,11 @@ export class ValidatorService {
 
             } catch (error) {
 
-
                 // 錯誤訊息
                 let msg: YoutubeValidationErrors = { 'YouTubeIsNotAvailable': 'YouTube is not available' };
+
+                // 使用者提醒
+                this.widget.snackBar('YouTube is not available');
 
                 return msg;
             }
