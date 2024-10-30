@@ -23,9 +23,6 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 	/** 取消訂閱 */
 	private unsubscribe = new Subject();
 
-	@ViewChild('formDirective')
-	formDirective!: NgForm;
-
 	/** 圖片路徑 */
 	imgSrc = '';
 
@@ -60,8 +57,14 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 
 
 	ngOnInit(): void {
+		this.formStatusChanges();
+	}
 
-		// 關注表單狀態變更事件
+
+	/**
+	 * 關注表單狀態變更事件
+	 */
+	formStatusChanges(): void {
 		this.formGroup.statusChanges.pipe(
 			// 關注取消訂閱事件
 			takeUntil(this.unsubscribe),
@@ -100,6 +103,7 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 			}
 
 		});
+
 	}
 
 

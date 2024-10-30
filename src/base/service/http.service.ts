@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, EMPTY, retry, throwError } from 'rxjs';
-import { ApiKey } from '../type/base.type';
 import { API_URL, HTTP_RETRY_TIMES } from '../const/base.const';
+import { ApiKey } from '../type/base.type';
 
 
 
@@ -13,6 +13,7 @@ import { API_URL, HTTP_RETRY_TIMES } from '../const/base.const';
     providedIn: 'root'
 })
 export class HttpService {
+
 
     /** 儲存 API Key */
     private apiKeySave = '';
@@ -40,6 +41,14 @@ export class HttpService {
         return new URL(urlRaw);
 
     }
+
+
+	/**
+	 * 修改 API 欄位
+	 */
+	editApiKey(api: string): void {
+		this.apiKeySave = api;
+	}
 
 
     /**

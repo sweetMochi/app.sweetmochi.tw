@@ -1,0 +1,6 @@
+<div class="wrap">
+    <form [formGroup]="formGroup">
+        <mat-slide-toggle class="toggle" formControlName="apiOffline" (ngModelChange)="userChange('apiOffline')">Enable API service offline mode</mat-slide-toggle>
+        <mat-slide-toggle class="toggle" formControlName="youTubeOffline" (ngModelChange)="userChange('youTubeOffline')">Enable YouTube service offline mode</mat-slide-toggle>
+    </form>
+</div>

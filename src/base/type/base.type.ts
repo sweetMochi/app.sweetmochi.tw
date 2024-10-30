@@ -21,3 +21,20 @@ export interface NavList {
     /** 名稱 */
     name: string;
 }
+
+
+/**
+ * 本地儲存
+ */
+export interface LocalStorage {
+    /** API 服務離線測試 */
+    apiOffline: boolean;
+    /** Youtube API 離線測試 */
+    youTubeOffline: boolean;
+}
+
+
+/**
+ * 本地儲存欄位
+ */
+export type LocalStorageKey = keyof LocalStorage;
