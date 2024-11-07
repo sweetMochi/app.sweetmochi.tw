@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { throwError } from 'rxjs';
 import { API_URL } from '../const/base.const';
 import { LocalService } from '../service/local.service';
+import { YOUTUBE_API } from '../const/youtube.const';
 
 
 
@@ -14,24 +15,46 @@ export class TestInterceptor implements HttpInterceptor {
 
 
     constructor(
-		private local: LocalService
+        private local: LocalService
     ) { }
 
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
 
-        // 如果當前為 API 離線狀態並且請求網址為 API 網址
-        if (this.local.get<boolean>('apiOffline') && req.url.includes(API_URL)) {
-            return throwError(
-                () =>
-                    new HttpErrorResponse({
-                        error: 'your error',
-                        status: 403
-                    }
-                )
-            );
+        // 預設返回正常 http 請求
+        let rq = next.handle(req);
+
+        switch (true) {
+            // 如果本地儲存 API 離線測試條件為開啟
+            // 且
+            // 請求網址包含 API 網址
+            case this.local.get<boolean>('apiOffline') && req.url.includes(API_URL):
+                rq = throwError(
+                    () => new HttpErrorResponse(
+                        {
+                            error: 'Test "apiOffline" Error',
+                            status: 403
+                        }
+                    )
+                );
+                break;
+
+            // 如果本地儲存 Youtube 離線測試條件為開啟
+            // 並
+            // 請求網址包含 YouTube API 網址
+            case this.local.get<boolean>('youTubeOffline') && req.url.includes(YOUTUBE_API):
+                rq = throwError(
+                    () => new HttpErrorResponse(
+                        {
+                            error: 'Test "youTubeOffline" Error',
+                            status: 403
+                        }
+                    )
+                );
+                break;
         }
 
-        return next.handle(req);
+
+        return rq;
     }
 }

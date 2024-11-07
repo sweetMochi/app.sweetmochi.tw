@@ -14,7 +14,7 @@ import { YouTubeThumbnailList } from '../../../base/type/youtube.type';
  * 取得 YouTube 預覽圖功能
  */
 @Component({
-	selector: 'app-youtube-thumbnail',
+	selector: 'page-youtube-thumbnail',
 	templateUrl: './youtube-thumbnail.component.html',
 	styleUrl: './youtube-thumbnail.component.less'
 })
@@ -53,7 +53,7 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 		private youtube: YoutubeService,
 		private formBuilder: FormBuilder,
 		private validatorService: ValidatorService
-	) {}
+	) { }
 
 
 	ngOnInit(): void {
@@ -69,7 +69,7 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 			// 關注取消訂閱事件
 			takeUntil(this.unsubscribe),
 			// 僅驗證通過與為通過狀態
-			filter( data => (data === 'INVALID' || data === 'VALID'))
+			filter(data => (data === 'INVALID' || data === 'VALID'))
 		).subscribe(data => {
 
 			// 取得影片 ID

@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, EMPTY, retry, throwError } from 'rxjs';
+import { catchError, EMPTY, filter, map, retry, tap, throwError } from 'rxjs';
 import { API_URL, HTTP_RETRY_TIMES } from '../const/base.const';
-import { ApiKey } from '../type/base.type';
+import { ApiKey, DataApi } from '../type/base.type';
 
 
 
@@ -65,7 +65,7 @@ export class HttpService {
             }
 
             // 沒有的話則嘗試取得 API Key
-            this.get<ApiKey>(`${API_URL}/`).pipe(
+            this.getRoot<ApiKey>(`${API_URL}/`).pipe(
                 // 例外處理
                 catchError(
                     (error: HttpErrorResponse) => {
@@ -87,7 +87,7 @@ export class HttpService {
      * 接口 get 方法
      * @param url 網址
      */
-    get<T>(url: string) {
+    getRoot<T>(url: string) {
         return this.http.get<T>(
             url,
             {
@@ -97,6 +97,41 @@ export class HttpService {
             retry(HTTP_RETRY_TIMES),
             catchError(this.handleError)
         );
+    }
+
+
+    /**
+     * 接口 get 方法
+     * @param url 網址
+     * @param resolve 回傳資料
+     * @param reject 回傳錯誤
+     * @param rq 請求資料
+     */
+    get<T, U = {} | null>(url: string, resolve: (data: T) => void, reject?: (data: DataApi) => void, rq?: U): void {
+        this.http.get<DataApi>(
+            url,
+            {
+                responseType: 'json',
+                // 如果有請求參數則傳入請求參數
+                params: rq ? rq : {}
+            }
+        ).pipe(
+            retry(HTTP_RETRY_TIMES),
+            // TODO：路徑錯誤回調
+            catchError(this.handleError)
+        ).subscribe(res => {
+            // 如果沒有錯誤代碼
+            if (res.code === '') {
+                // 返回請求資料
+                resolve(res.data);
+            } else {
+                // 如果有設置錯誤回調
+                if (reject) {
+                    // 錯誤回調
+                    reject(res);
+                }
+            }
+        });
     }
 
 

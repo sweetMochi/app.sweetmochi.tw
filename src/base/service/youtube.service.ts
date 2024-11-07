@@ -105,7 +105,7 @@ export class YoutubeService {
 
             let url = new URL(`${YOUTUBE_API}?${params}`);
 
-            this.http.get(url.toString()).pipe(
+            this.http.getRoot(url.toString()).pipe(
                 catchError(
                     () => {
                         this.widget.snackBar('YouTube is not available');

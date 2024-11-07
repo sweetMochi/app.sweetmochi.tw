@@ -2,11 +2,16 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PageSettingComponent } from './page/setting/setting.component';
 import { PageYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-thumbnail.component';
+import { PageNoteComponent } from './page/note/note.component';
 
 const routes: Routes = [
 	{
 		path: '',
-		component: PageYoutubeThumbnailComponent
+		component: PageNoteComponent
+	},
+	{
+		path: 'note',
+		component: PageNoteComponent
 	},
 	{
 		path: 'youtube-thumbnail',
@@ -18,7 +23,7 @@ const routes: Routes = [
 	},
 	{
 		path: '**',
-		redirectTo: 'youtube-thumbnail',
+		redirectTo: 'note',
 		pathMatch: 'full',
 	}
 ];

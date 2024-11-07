@@ -29,6 +29,11 @@ export class AppComponent implements OnInit {
 			path: '/youtube-thumbnail',
 			icon: 'image',
 			name: 'YouTube Thumbnail'
+		},
+		{
+			path: '/note',
+			icon: 'description',
+			name: 'Note'
 		}
 	];
 
@@ -36,8 +41,8 @@ export class AppComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private http: HttpService,
-        private widget: WidgetService
-	) {}
+		private widget: WidgetService
+	) { }
 
 
 	ngOnInit(): void {

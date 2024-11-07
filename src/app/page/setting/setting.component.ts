@@ -10,7 +10,7 @@ import { LocalStorageKey } from '../../../base/type/base.type';
  * 設定頁面
  */
 @Component({
-	selector: 'app-setting',
+	selector: 'page-setting',
 	templateUrl: './setting.component.html',
 	styleUrl: './setting.component.less'
 })
@@ -37,7 +37,8 @@ export class PageSettingComponent implements OnInit {
 
 	ngOnInit(): void {
 		// 從本地資料取得設定
-		this.formGroup.controls.apiOffline.setValue(this.local.get('apiOffline'));
+		this.formGroup.controls.apiOffline.setValue(this.local.get('apiOffline') || false);
+		this.formGroup.controls.youTubeOffline.setValue(this.local.get('youTubeOffline') || false);
 	}
 
 
@@ -46,11 +47,15 @@ export class PageSettingComponent implements OnInit {
 	 * @param key 欄位值
 	 */
 	userChange(key: LocalStorageKey): void {
-		if (key === 'apiOffline') {
-			this.local.set<boolean>('apiOffline', this.formGroup.controls.apiOffline.value || false);
-			if (this.formGroup.controls.apiOffline) {
-				this.http.editApiKey('');
-			}
+
+		// 修改本地儲存設定
+		this.local.set<boolean>(key, this.formGroup.controls[key as 'youTubeOffline' | 'apiOffline'].value || false);
+
+		// 如果為設定 API 離線模式
+		// 並且離線模式設定為 true
+		if (key === 'apiOffline' && this.formGroup.controls.apiOffline) {
+			// 清空 API 設定
+			this.http.editApiKey('');
 		}
 	}
 

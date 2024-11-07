@@ -2,6 +2,9 @@
 /** API 主機 */
 export const API_URL = 'https://app.sweetmochi.tw/api';
 
+/** 資料網址 */
+export const DATA_URL = '/data';
+
 /**
  * 網址正則表達式
  *
