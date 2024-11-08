@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, EMPTY, filter, map, retry, tap, throwError } from 'rxjs';
 import { API_URL, HTTP_RETRY_TIMES } from '../const/base.const';
 import { ApiKey, DataApi } from '../type/base.type';
+import { API_STATUS } from '../const/api-status.const';
 
 
 
@@ -103,22 +104,29 @@ export class HttpService {
     /**
      * 接口 get 方法
      * @param url 網址
+     * @param rq 請求資料
      * @param resolve 回傳資料
      * @param reject 回傳錯誤
-     * @param rq 請求資料
      */
-    get<T, U = {} | null>(url: string, resolve: (data: T) => void, reject?: (data: DataApi) => void, rq?: U): void {
+    get<T, U = {} | null>(url: string, rq: U, resolve: (data: T) => void, reject?: (data: DataApi) => void): void {
         this.http.get<DataApi>(
             url,
             {
+                // 固定回傳 json 格式
                 responseType: 'json',
                 // 如果有請求參數則傳入請求參數
                 params: rq ? rq : {}
             }
         ).pipe(
             retry(HTTP_RETRY_TIMES),
-            // TODO：路徑錯誤回調
-            catchError(this.handleError)
+            catchError(data => {
+                // 如果有設置錯誤回調
+                if (reject) {
+                    // 錯誤回調
+                    reject(API_STATUS.PAGE_NOT_FOUND);
+                }
+                return throwError(() => new Error('Something bad happened; please try again later.'));
+            })
         ).subscribe(res => {
             // 如果沒有錯誤代碼
             if (res.code === '') {

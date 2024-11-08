@@ -1,13 +1,6 @@
-
-/**
- * HTTP 狀態
- *
- *      get: 查詢，若沒有傳入 ID 則視為取得全部列表
- *      post: 新增，創建 ID 並新增記錄
- *      patch: 修改，根據現有 ID 資料進行編輯
- *      delete: 刪除，刪除該筆 ID 資料
- */
-export type HttpMothod = 'get' | 'post' | 'patch' | 'delete';
+import { HttpResponse } from '@angular/common/http';
+import { of } from 'rxjs';
+import { HttpRq } from './http.type';
 
 
 /**
@@ -50,19 +43,18 @@ export interface DataApi {
  */
 export interface AppNote {
     /** 編號 */
-    id: string;
+    id?: string;
     /** 標題 */
     title: string;
     /** 內文 */
     content: string;
     /** 圖片 */
-    image: string;
+    image?: string;
     /** 日期 */
     date: string;
     /** 標籤 */
-    tag: string[];
+    tag?: string[];
 }
-
 
 /**
  * 本地儲存
@@ -81,3 +73,50 @@ export interface LocalStorage {
  * 本地儲存欄位
  */
 export type LocalStorageKey = keyof LocalStorage;
+
+
+/**
+ * API 狀態
+ */
+export class ApiStatus implements DataApi {
+
+    /** 錯誤代碼 */
+    code = '';
+
+    /** 錯誤說明 */
+    desc = '';
+
+    /** 回傳資料 */
+    data: any = null;
+
+    constructor(
+        code: string,
+        desc: string,
+        data?: any
+    ) {
+        this.code = code || '';
+        this.desc = desc || '';
+        this.data = data || null;
+    }
+
+    /**
+     * 取得 HTTP 狀態
+     */
+    get http() {
+
+        let httpRq: HttpRq = {
+            status: 200,
+            body: {
+                code: this.code,
+                desc: this.desc
+            }
+        };
+
+        if (this.data) {
+            httpRq.body.data = this.data;
+        }
+
+        return of(new HttpResponse(httpRq));
+    }
+
+}

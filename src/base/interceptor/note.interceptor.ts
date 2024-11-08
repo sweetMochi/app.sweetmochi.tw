@@ -1,9 +1,11 @@
-import { HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LocalService } from '../service/local.service';
+import { Observable } from 'rxjs';
+import { API_STATUS } from '../const/api-status.const';
 import { DATA_URL } from '../const/base.const';
-import { of } from 'rxjs';
-import { AppNote, DataApi, HttpMothod } from '../type/base.type';
+import { LocalService } from '../service/local.service';
+import { ApiStatus, AppNote } from '../type/base.type';
+import { HttpMothod } from '../type/http.type';
 
 
 
@@ -33,7 +35,9 @@ export class DataNoteInterceptor implements HttpInterceptor {
         // /data/note/delete/1
         let dataUrl = req.url.split('/');
 
-        if (req.url.includes(DATA_URL)) {
+        // 符合資料網址格式
+        // '/data' 網址開頭
+        if (req.url.indexOf(DATA_URL) === 0) {
             // 去除 ['', 'data'] 以及其他參數
             dataUrl = dataUrl.slice(2, 5);
             // 解構賦值
@@ -47,30 +51,13 @@ export class DataNoteInterceptor implements HttpInterceptor {
 
             // 判斷方法回傳資料
             switch (httpMethod) {
+
                 case 'get':
-
-                    // 如果有 ID
-                    if (id) {
-                        // 從本地取得資料
-                        let data: AppNote[] = this.local.get('appNote');
-                        // 比對 ID 取得筆記
-                        let target = data.find( item => item.id === id);
-                        // 如果有取得對應筆記，則返回筆記資料
-                        // 沒有資料則返回預設錯誤訊息
-                        rq = target ? this.ok(target) : this.noData();
-
-                    } else {
-                        // 從本地取得資料
-                        let data = this.local.get('appNote');
-                        // 如果有取得筆記列表，則返回筆記列表
-                        // 沒有資料則返回預設錯誤訊息
-                        rq = data ? this.ok(data) : this.noData();
-                    }
-
+                    rq = this.getRq(id);
                     break;
 
                 case 'post':
-
+                    rq = this.postRq(req);
                     break;
 
                 case 'patch':
@@ -91,28 +78,92 @@ export class DataNoteInterceptor implements HttpInterceptor {
 
 
     /**
-     * 回覆狀態
-     * @param data 回覆資料
+     * 取得記事本請求資料
+     * @param id 編號
      */
-    ok(data = {}) {
-        let apiData: DataApi = {
-            code: '',
-            desc: '',
-            data
-        };
-        return of(new HttpResponse({ status: 200, body: apiData }));
+    private getRq(id?: string): Observable<HttpEvent<any>> {
+        // 如果有 ID
+        if (id) {
+            // 從本地取得資料
+            let data: AppNote[] = this.local.get('appNote');
+            // 比對 ID 取得筆記
+            let target = data.find( item => item.id === id);
+            // 如果有取得對應筆記，則返回筆記資料
+            // 沒有資料則返回預設錯誤訊息
+            return target ? this.ok(target) : API_STATUS.NO_DATA.http;
+        }
+
+        // 從本地取得資料
+        let data = this.local.get('appNote');
+        // 如果有取得筆記列表，則返回筆記列表
+        // 沒有資料則返回預設錯誤訊息
+        return data ? this.ok(data) : API_STATUS.NO_DATA.http;
     }
 
 
     /**
-     * 無資料狀態返回
+     * 請求資料
+     * @param req HTTP 請求
      */
-    noData() {
-        let apiData: DataApi = {
-            code: '1001',
-            desc: 'No data'
-        };
-        return of(new HttpResponse({ status: 200, body: apiData }));
+    private postRq(req: HttpRequest<any>) {
+
+        // 請求欄位
+        let rqKeys: (keyof AppNote)[] = ['title', 'content', 'date'];
+
+        // 檢查是否滿足每個欄位
+        let ok = rqKeys.every(data => req.params.has(data));
+
+        // 如果已滿足
+        if (ok) {
+
+            // 取得記事本列表
+            let noteList = this.local.get<AppNote[]>('appNote');
+
+            // 創建新增欄位
+            let addKeys: (keyof AppNote)[] = ['title', 'content', 'date', 'image', 'tag'];
+
+            // 新增筆記
+            let add = {} as AppNote;
+
+            // 遍歷所有新增欄位
+            addKeys.forEach( data =>{
+                // 如果請求參數有包含這個欄位
+                if (req.params.has(data)) {
+                    // 新增到資料
+                    add[data] = req.params.get(data) as any;
+                }
+            });
+
+            // 創建筆記編號
+            add.id = this.local.id();
+
+            // 如果筆記列表已存在且已經有資料
+            if (noteList && noteList.length > 0) {
+                // 新增當前資料
+                noteList.push(add);
+                // 更新本地資料
+                this.local.set<AppNote[]>('appNote', noteList);
+            } else {
+                // 將新增資料當作是第一筆紀錄
+                this.local.set<AppNote[]>('appNote', [add]);
+            }
+
+            // 回覆 OK
+            return API_STATUS.OK.http;
+        }
+
+        // 資料格式錯誤
+        return API_STATUS.DATA_INVALID.http;
+
+    }
+
+
+    /**
+     * 回覆正常
+     * @param data 回覆資料
+     */
+    ok(data = {}) {
+        return new ApiStatus('', '', data).http;
     }
 
 
