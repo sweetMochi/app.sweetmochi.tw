@@ -15,6 +15,12 @@ import { HttpMothod } from '../type/http.type';
 @Injectable()
 export class DataNoteInterceptor implements HttpInterceptor {
 
+    /** POST 請求基本欄位 */
+    rqBaseKey: (keyof AppNote)[] = ['title', 'content', 'date'];
+
+    /** POST 請求新增欄位 */
+    rqNewKey: (keyof AppNote)[] = ['title', 'content', 'date', 'image', 'tag'];
+
 
     constructor(
         private local: LocalService
@@ -78,7 +84,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
 
 
     /**
-     * 取得記事本請求資料
+     * 取得方法
      * @param id 編號
      */
     private getRq(id?: string): Observable<HttpEvent<any>> {
@@ -102,16 +108,13 @@ export class DataNoteInterceptor implements HttpInterceptor {
 
 
     /**
-     * 請求資料
+     * 新增方法
      * @param req HTTP 請求
      */
     private postRq(req: HttpRequest<any>) {
 
-        // 請求欄位
-        let rqKeys: (keyof AppNote)[] = ['title', 'content', 'date'];
-
-        // 檢查是否滿足每個欄位
-        let ok = rqKeys.every(data => req.params.has(data));
+        // 檢查是否滿足基本欄位
+        let ok = this.rqBaseKey.every(data => req.params.has(data));
 
         // 如果已滿足
         if (ok) {
@@ -119,14 +122,11 @@ export class DataNoteInterceptor implements HttpInterceptor {
             // 取得記事本列表
             let noteList = this.local.get<AppNote[]>('appNote');
 
-            // 創建新增欄位
-            let addKeys: (keyof AppNote)[] = ['title', 'content', 'date', 'image', 'tag'];
-
             // 新增筆記
             let add = {} as AppNote;
 
             // 遍歷所有新增欄位
-            addKeys.forEach( data =>{
+            this.rqNewKey.forEach( data =>{
                 // 如果請求參數有包含這個欄位
                 if (req.params.has(data)) {
                     // 新增到資料
@@ -154,6 +154,61 @@ export class DataNoteInterceptor implements HttpInterceptor {
 
         // 資料格式錯誤
         return API_STATUS.DATA_INVALID.http;
+
+    }
+
+
+    /**
+     * 編輯方法
+     * @param id 編號
+     * @param req HTTP 請求
+     */
+    private patchRq(id: string, req: HttpRequest<any>) {
+
+        if (!id) {
+            // 資料格式錯誤
+            return API_STATUS.DATA_INVALID.http;
+        }
+
+        // 檢查是否滿足基本欄位
+        let ok = this.rqBaseKey.every(data => req.params.has(data));
+
+        if (!ok) {
+            // 資料格式錯誤
+            return API_STATUS.DATA_INVALID.http;
+        }
+
+        // 從本地取得資料
+        let data: AppNote[] = this.local.get('appNote');
+
+        // 比對 ID 序號取得筆記
+        let index = data.findIndex( item => item.id === id);
+
+        // 如果沒有取得序號
+        if (index < 0) {
+            return API_STATUS.DATA_NOT_FOUND.http;
+        }
+
+        // 修改筆記物件
+        let edit = {} as AppNote;
+
+        // 遍歷所有新增欄位
+        this.rqNewKey.forEach( data =>{
+            // 如果請求參數有包含這個欄位
+            if (req.params.has(data)) {
+                // 新增到資料
+                edit[data] = req.params.get(data) as any;
+            }
+        });
+
+        // 更新對應資料
+        data[index] = edit;
+
+        // 更新本地資料
+        this.local.set<AppNote[]>('appNote', data);
+
+        // 回覆 OK
+        return API_STATUS.OK.http;
 
     }
 
