@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppNoteComponent } from './note.component';
+import { PopupConfirmComponent } from './popup-confirm.component';
 
-describe('AppNoteComponent', () => {
-  let component: AppNoteComponent;
-  let fixture: ComponentFixture<AppNoteComponent>;
+describe('PopupConfirmComponent', () => {
+  let component: PopupConfirmComponent;
+  let fixture: ComponentFixture<PopupConfirmComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppNoteComponent]
+      declarations: [PopupConfirmComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AppNoteComponent);
+    fixture = TestBed.createComponent(PopupConfirmComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

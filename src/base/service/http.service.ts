@@ -1,9 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, EMPTY, filter, map, retry, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, retry, throwError } from 'rxjs';
+import { API_STATUS } from '../const/api-status.const';
 import { API_URL, HTTP_RETRY_TIMES } from '../const/base.const';
 import { ApiKey, DataApi } from '../type/base.type';
-import { API_STATUS } from '../const/api-status.const';
+import { WidgetService } from './widget.service';
 
 
 
@@ -24,7 +25,8 @@ export class HttpService {
 
 
 	constructor(
-		private http: HttpClient
+		private http: HttpClient,
+		private widget: WidgetService
 	) {}
 
 
@@ -120,26 +122,41 @@ export class HttpService {
         ).pipe(
             retry(HTTP_RETRY_TIMES),
             catchError(data => {
-                // 如果有設置錯誤回調
-                if (reject) {
-                    // 錯誤回調
-                    reject(API_STATUS.PAGE_NOT_FOUND);
-                }
-                return throwError(() => new Error('Something bad happened; please try again later.'));
+                // 提醒回調方法
+                this.rejectAction(API_STATUS.DATA_NOT_FOUND, reject);
+                // 詳細錯誤
+                return throwError(() => new Error(data));
             })
         ).subscribe(res => {
+
             // 如果沒有錯誤代碼
             if (res.code === '') {
                 // 返回請求資料
                 resolve(res.data);
-            } else {
-                // 如果有設置錯誤回調
-                if (reject) {
-                    // 錯誤回調
-                    reject(res);
-                }
+                return;
             }
+
+            // 提醒回調方法
+            this.rejectAction(res, reject);
         });
+    }
+
+
+    /**
+     * 提醒回調方法
+     * @param data 後端資料
+     * @param reject 錯誤回調
+     */
+    rejectAction(data: DataApi, reject?: (data: DataApi) => void) {
+        // 如果有設置錯誤回調
+        if (reject) {
+            // 錯誤回調
+            reject(data);
+        } else if (reject === undefined) {
+            // 預設使用 snack bar 提醒
+            this.widget.snackBar(data.desc);
+        }
+
     }
 
 

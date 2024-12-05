@@ -1,0 +1,38 @@
+<mat-card class="card" appearance="outlined">
+    <mat-card-header>
+        <div mat-card-avatar class="card-icon"></div>
+        <div class="headline">
+            <mat-card-title [textContent]="item.title"></mat-card-title>
+            <mat-card-subtitle [textContent]="item.date"></mat-card-subtitle>
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="userEdit()">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+            </button>
+            <button mat-menu-item (click)="userDelete()">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+            </button>
+        </mat-menu>
+    </mat-card-header>
+    @if (item.image) {
+        <img mat-card-image [src]="item.image" [alt]="item.title">
+    }
+    @else {
+        <hr>
+    }
+    <mat-card-content>
+        @if (item.tag?.length) {
+            <mat-chip-set class="tag-list">
+                @for (data of item.tag; track $index) {
+                    <mat-chip><span [textContent]="data"></span></mat-chip>
+                }
+            </mat-chip-set>
+        }
+        <p [textContent]="item.content"></p>
+    </mat-card-content>
+</mat-card>

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { YOUTUBE_HOST_LIST } from '../const/youtube.const';
-import { UrlValidationErrors, YoutubeValidationErrors } from '../type/error.type';
+import { DateValidationErrors, UrlValidationErrors, YoutubeValidationErrors } from '../type/error.type';
 import { YoutubeService } from './youtube.service';
 import { HttpService } from './http.service';
-import { URL_REGEX } from '../const/base.const';
+import { DATE_REGEX, URL_REGEX } from '../const/base.const';
 import { WidgetService } from './widget.service';
 
 
@@ -22,6 +22,26 @@ export class ValidatorService {
         private httpService: HttpService,
         private youTubeService: YoutubeService
 	) {}
+
+
+    /**
+     * 日期驗證
+     */
+    get date(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            let value = control.value;
+
+            if (!value) {
+                return null;
+            }
+
+            // 錯誤訊息
+            let error: DateValidationErrors = { 'invalidDate': 'Invalid date' };
+
+            return DATE_REGEX.test(value) ? null : error;
+
+        }
+    }
 
 
     /**

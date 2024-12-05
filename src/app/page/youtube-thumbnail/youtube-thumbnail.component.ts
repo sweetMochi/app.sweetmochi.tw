@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, NgForm, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { filter, Subject, takeUntil } from 'rxjs';
-import { YOUTUBE_URL_SHORT } from '../../../base/const/youtube.const';
+import { YOUTUBE_URL, YOUTUBE_URL_SHORT } from '../../../base/const/youtube.const';
 import { ValidatorService } from '../../../base/service/validator.service';
 import { WidgetService } from '../../../base/service/widget.service';
 import { YoutubeService } from '../../../base/service/youtube.service';
@@ -14,11 +14,12 @@ import { YouTubeThumbnailList } from '../../../base/type/youtube.type';
  * 取得 YouTube 預覽圖功能
  */
 @Component({
+	standalone: false,
 	selector: 'page-youtube-thumbnail',
 	templateUrl: './youtube-thumbnail.component.html',
 	styleUrl: './youtube-thumbnail.component.less'
 })
-export class PageYoutubeThumbnailComponent implements OnInit {
+export class AppYoutubeThumbnailComponent implements OnInit {
 
 	/** 取消訂閱 */
 	private unsubscribe = new Subject();
@@ -28,6 +29,9 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 
 	/** 短網址 */
 	shortUrl = '';
+
+	/** 網址 */
+	webUrl = '';
 
 	/** 標題名稱 */
 	videoTitle = '';
@@ -114,7 +118,13 @@ export class PageYoutubeThumbnailComponent implements OnInit {
 	 */
 	initVideoInfo(id: string, size?: YouTubeThumbnailList): void {
 		this.imgSrc = this.youtube.thumbnailUrl(id, size);
+
+		// 網址範例：
+		// youtu.be/92tvv7PgKeI
+		// youtube.com/watch?v=92tvv7PgKeI
 		this.shortUrl = `${YOUTUBE_URL_SHORT}/${id}`;
+		this.webUrl = `${YOUTUBE_URL}/watch?v=${id}`;
+
 		this.videoTitle = this.youtube.getVideoSave()?.snippet.title || '';
 	}
 

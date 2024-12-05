@@ -9,6 +9,7 @@ import { NavList } from '../base/type/base.type';
 
 
 @Component({
+	standalone: false,
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.less'

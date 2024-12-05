@@ -1,1 +1,21 @@
-<p>note works!</p>
+
+@if (!list.length) {
+    <mat-card class="card" appearance="outlined">
+        <mat-card-content>
+            <div class="content">Note is empty </div>
+            <button class="send" mat-flat-button (click)="userNew()">Create new</button>
+        </mat-card-content>
+    </mat-card>
+}
+@else {
+    @for (item of list; track $index) {
+        <note-base-card
+            [item]="item"
+            (delete)="userDelete($event)"
+        ></note-base-card>
+    }
+}
+
+<button mat-fab class="button-add" (click)="userNew()">
+    <mat-icon>add</mat-icon>
+</button>

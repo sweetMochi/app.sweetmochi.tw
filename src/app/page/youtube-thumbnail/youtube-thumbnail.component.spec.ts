@@ -1,23 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PageYoutubeThumbnailComponent } from './youtube-thumbnail.component';
+import { AppYoutubeThumbnailComponent } from './youtube-thumbnail.component';
 
-describe('PageYoutubeThumbnailComponent', () => {
-  let component: PageYoutubeThumbnailComponent;
-  let fixture: ComponentFixture<PageYoutubeThumbnailComponent>;
+describe('AppYoutubeThumbnailComponent', () => {
+	let component: AppYoutubeThumbnailComponent;
+	let fixture: ComponentFixture<AppYoutubeThumbnailComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [PageYoutubeThumbnailComponent]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [AppYoutubeThumbnailComponent]
+		})
+			.compileComponents();
 
-    fixture = TestBed.createComponent(PageYoutubeThumbnailComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(AppYoutubeThumbnailComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

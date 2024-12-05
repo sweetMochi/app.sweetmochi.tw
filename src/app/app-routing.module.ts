@@ -1,29 +1,40 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PageSettingComponent } from './page/setting/setting.component';
-import { PageYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-thumbnail.component';
-import { PageNoteComponent } from './page/note/note.component';
+import { AppNoteNewComponent } from './page/note/note-new/note-new.component';
+import { AppNotePageComponent } from './page/note/note-page/note-page.component';
+import { AppNoteComponent } from './page/note/note.component';
+import { AppSettingComponent } from './page/setting/setting.component';
+import { AppYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-thumbnail.component';
 
 const routes: Routes = [
 	{
-		path: '',
-		component: PageNoteComponent
-	},
-	{
 		path: 'note',
-		component: PageNoteComponent
+		children: [
+			{
+				path: '',
+				component: AppNoteComponent
+			},
+			{
+				path: 'new',
+				component: AppNoteNewComponent
+			},
+			{
+				path: ':id',
+				component: AppNotePageComponent
+			}
+		]
 	},
 	{
 		path: 'youtube-thumbnail',
-		component: PageYoutubeThumbnailComponent
+		component: AppYoutubeThumbnailComponent
 	},
 	{
 		path: 'setting',
-		component: PageSettingComponent
+		component: AppSettingComponent
 	},
 	{
 		path: '**',
-		redirectTo: 'note',
+		redirectTo: 'youtube-thumbnail',
 		pathMatch: 'full',
 	}
 ];

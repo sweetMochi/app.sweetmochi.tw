@@ -10,11 +10,12 @@ import { LocalStorageKey } from '../../../base/type/base.type';
  * 設定頁面
  */
 @Component({
+	standalone: false,
 	selector: 'page-setting',
 	templateUrl: './setting.component.html',
 	styleUrl: './setting.component.less'
 })
-export class PageSettingComponent implements OnInit {
+export class AppSettingComponent implements OnInit {
 
 
 	/** 驗證表單 */

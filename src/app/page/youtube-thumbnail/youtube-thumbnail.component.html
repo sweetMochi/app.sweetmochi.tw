@@ -33,7 +33,6 @@
             <button class="send" mat-flat-button>SEARCH</button>
         </form>
     </mat-card-content>
-
 </mat-card>
 
 @if (imgSrc) {
@@ -48,9 +47,21 @@
         }
 
         <mat-card-content>
+            @if (webUrl) {
+                <mat-form-field class="form-field" appearance="outline">
+                    <mat-label>YouTube web URL</mat-label>
+                    <input
+                        matInput
+                        readonly
+                        type="url"
+                        [value]="webUrl"
+                    />
+                    <mat-icon matSuffix class="copy" (click)="userCopy(webUrl)">content_copy</mat-icon>
+                </mat-form-field>
+            }
             @if (shortUrl) {
                 <mat-form-field class="form-field" appearance="outline">
-                    <mat-label>YouTube short url</mat-label>
+                    <mat-label>YouTube short URL</mat-label>
                     <input
                         matInput
                         readonly

@@ -1,0 +1,7 @@
+@if (data) {
+    <note-edit
+        type="patch"
+        [item]="data"
+        (action)="userPatch($event)"
+    ></note-edit>
+}

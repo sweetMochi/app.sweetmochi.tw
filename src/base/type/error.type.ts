@@ -29,6 +29,22 @@ export type YoutubeValidationErrorsType = 'invalidYouTubeId' | 'invalidYouTubeUr
 
 
 /**
+ * 筆記卡牌錯誤型別
+ *
+ *      dateInvalid: 日期格式不正確
+ *      matDatepickerParse: 內建格式驗證方法
+ *
+ */
+export type DateValidationErrorsType = 'invalidDate' | 'matDatepickerParse';
+
+
+/**
+ * 筆記卡牌錯誤型別
+ */
+export type NoteValidationErrorsType = ValidationErrorsType | DateValidationErrorsType;
+
+
+/**
  * Youtube 驗證錯誤格式
  */
 export type YoutubeValidationErrors<T = string> = {
@@ -37,8 +53,24 @@ export type YoutubeValidationErrors<T = string> = {
 
 
 /**
+ * 日期驗證錯誤格式
+ */
+export type DateValidationErrors<T = string> = {
+    [key in DateValidationErrorsType]?: T;
+}
+
+
+/**
  * 網址驗證錯誤格式
  */
 export type UrlValidationErrors<T = string> = {
     [key in UrlValidationErrorsType]?: T;
+}
+
+
+/**
+ * 筆記卡牌錯誤格式
+ */
+export type NoteValidationErrors<T = string> = {
+    [key in NoteValidationErrorsType]?: T;
 }

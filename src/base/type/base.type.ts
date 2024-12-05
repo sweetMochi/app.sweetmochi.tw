@@ -32,16 +32,16 @@ export interface DataApi {
     /** 錯誤代碼 */
     code: string;
     /** 錯誤說明 */
-    desc: string;
+    desc?: string;
     /** 回傳資料 */
     data?: any;
 }
 
 
 /**
- * 筆記本
+ * 筆記本 - 回傳資料
  */
-export interface AppNote {
+export interface NoteData {
     /** 編號 */
     id?: string;
     /** 標題 */
@@ -56,6 +56,13 @@ export interface AppNote {
     tag?: string[];
 }
 
+
+/**
+ * 筆記本 - 欄位名稱
+ */
+export type NoteKey = keyof NoteData;
+
+
 /**
  * 本地儲存
  */
@@ -65,7 +72,7 @@ export interface LocalStorage {
     /** Youtube API 離線測試 */
     youTubeOffline: boolean;
     /** 記事本 */
-    appNote: AppNote[];
+    noteData: NoteData[];
 }
 
 
@@ -91,7 +98,7 @@ export class ApiStatus implements DataApi {
 
     constructor(
         code: string,
-        desc: string,
+        desc?: string,
         data?: any
     ) {
         this.code = code || '';
@@ -104,14 +111,20 @@ export class ApiStatus implements DataApi {
      */
     get http() {
 
+        // 網路請求回覆格式
         let httpRq: HttpRq = {
             status: 200,
             body: {
-                code: this.code,
-                desc: this.desc
+                code: this.code
             }
         };
 
+        // 如果有錯誤說明
+        if (this.desc) {
+            httpRq.body.desc = this.desc;
+        }
+
+        // 如果有回傳資料
         if (this.data) {
             httpRq.body.data = this.data;
         }
