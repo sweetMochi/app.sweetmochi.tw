@@ -1,5 +1,5 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { NoteData, NoteKey } from '../../../../../root/type/base.type';
@@ -19,7 +19,8 @@ import { NoteBaseComponent } from '../note-base.component';
 	styleUrl: './note-base-edit.component.less'
 })
 export class NoteBaseEditComponent extends NoteBaseComponent {
-	@ViewChild('fileUpload') fileUpload?: ElementRef;
+	formBuilder = inject(FormBuilder);
+	@ViewChild('fileUpload') fileUpload!: ElementRef;
 
 	/** 傳入資料 */
 	@Input() item: NoteData = {
@@ -124,8 +125,8 @@ export class NoteBaseEditComponent extends NoteBaseComponent {
 	/**
 	 * 返回檔案 input HTML 結構
 	 */
-	get fileHtml(): HTMLInputElement | null {
-		return this.fileUpload ? this.fileUpload.nativeElement : null;
+	get fileHtml(): HTMLInputElement {
+		return this.fileUpload.nativeElement;
 	}
 
 

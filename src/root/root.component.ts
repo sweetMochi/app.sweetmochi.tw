@@ -20,7 +20,6 @@ export abstract class RootComponent implements OnInit {
 	private injectorLocalService = inject(LocalService);
 	private injectorRouter = inject(Router);
 	private injectorRoute = inject(ActivatedRoute);
-	private injectorFormBuilder = inject(FormBuilder);
 
 
 
@@ -36,7 +35,6 @@ export abstract class RootComponent implements OnInit {
 
 	get router() { return this.injectorRouter }
 	get route() { return this.injectorRoute }
-	get formBuilder() { return this.injectorFormBuilder }
 
 
 	/**

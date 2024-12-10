@@ -15,10 +15,8 @@ import { NavList } from '../root/type/base.type';
 })
 export class AppComponent extends RootComponent {
 
-
 	/** 側欄元件 */
-	@ViewChild(MatSidenav)
-	sidenav!: MatSidenav;
+	@ViewChild(MatSidenav) sidenav!: MatSidenav;
 
 	/** 當前路徑 */
 	path = '';

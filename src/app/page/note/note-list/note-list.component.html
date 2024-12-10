@@ -1,12 +1,15 @@
-
+<!-- 列表沒有筆記 -->
 @if (!list.length) {
+    <!-- 顯示沒有筆記卡牌樣式 開始 -->
     <mat-card class="card" appearance="outlined">
         <mat-card-content>
             <div class="content">Note is empty </div>
             <button class="send" mat-flat-button (click)="userNew()">Create new</button>
         </mat-card-content>
     </mat-card>
+    <!-- 顯示沒有筆記卡牌樣式 結束 -->
 }
+<!-- 顯示筆記列表 -->
 @else {
     @for (item of list; track $index) {
         <note-base-card
@@ -16,6 +19,8 @@
     }
 }
 
+<!-- 創建筆記按鈕 開始 -->
 <button mat-fab class="button-add" (click)="userNew()">
     <mat-icon>add</mat-icon>
 </button>
+<!-- 創建筆記按鈕 結束 -->

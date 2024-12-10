@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { YOUTUBE_URL, YOUTUBE_URL_SHORT } from '../../../root/const/youtube.const';
+import { RootComponent } from '../../../root/root.component';
 import { ValidatorService } from '../../../root/service/validator.service';
-import { WidgetService } from '../../../root/service/widget.service';
 import { YoutubeService } from '../../../root/service/youtube.service';
 import { UrlValidationErrorsType, ValidationErrorsType, YoutubeValidationErrorsType } from '../../../root/type/error.type';
 import { YouTubeThumbnailList } from '../../../root/type/youtube.type';
@@ -19,7 +19,11 @@ import { YouTubeThumbnailList } from '../../../root/type/youtube.type';
 	templateUrl: './youtube-thumbnail.component.html',
 	styleUrl: './youtube-thumbnail.component.less'
 })
-export class AppYoutubeThumbnailComponent implements OnInit {
+export class AppYoutubeThumbnailComponent extends RootComponent {
+	// 不使用 constructor 方式注入
+	youtubeService = inject(YoutubeService);
+	validatorService = inject(ValidatorService);
+	formBuilder = inject(FormBuilder);
 
 	/** 取消訂閱 */
 	private unsubscribe = new Subject();
@@ -52,15 +56,7 @@ export class AppYoutubeThumbnailComponent implements OnInit {
 	);
 
 
-	constructor(
-		private widget: WidgetService,
-		private youtube: YoutubeService,
-		private formBuilder: FormBuilder,
-		private validatorService: ValidatorService
-	) { }
-
-
-	ngOnInit(): void {
+	init(): void {
 		this.formStatusChanges();
 	}
 
@@ -77,7 +73,7 @@ export class AppYoutubeThumbnailComponent implements OnInit {
 		).subscribe(data => {
 
 			// 取得影片 ID
-			let id = this.youtube.id(this.formGroup.value.url || '');
+			let id = this.youtubeService.id(this.formGroup.value.url || '');
 
 			// 驗證通過
 			if (data === 'VALID') {
@@ -117,7 +113,7 @@ export class AppYoutubeThumbnailComponent implements OnInit {
 	 * @param size 影片預覽圖大小
 	 */
 	initVideoInfo(id: string, size?: YouTubeThumbnailList): void {
-		this.imgSrc = this.youtube.thumbnailUrl(id, size);
+		this.imgSrc = this.youtubeService.thumbnailUrl(id, size);
 
 		// 網址範例：
 		// youtu.be/92tvv7PgKeI
@@ -125,7 +121,7 @@ export class AppYoutubeThumbnailComponent implements OnInit {
 		this.shortUrl = `${YOUTUBE_URL_SHORT}/${id}`;
 		this.webUrl = `${YOUTUBE_URL}/watch?v=${id}`;
 
-		this.videoTitle = this.youtube.getVideoSave()?.snippet.title || '';
+		this.videoTitle = this.youtubeService.getVideoSave()?.snippet.title || '';
 	}
 
 
@@ -159,7 +155,7 @@ export class AppYoutubeThumbnailComponent implements OnInit {
 			return;
 		}
 		navigator.clipboard.writeText(txt);
-		this.widget.snackBar('Copy to clipboard!');
+		super.widgetService.snackBar('Copy to clipboard!');
 	}
 
 

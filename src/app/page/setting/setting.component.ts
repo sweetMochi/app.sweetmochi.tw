@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { RootComponent } from '../../../root/root.component';
 import { LocalStorageKey } from '../../../root/type/base.type';
 
@@ -14,6 +15,7 @@ import { LocalStorageKey } from '../../../root/type/base.type';
 	styleUrl: './setting.component.less'
 })
 export class AppSettingComponent extends RootComponent {
+	formBuilder = inject(FormBuilder);
 
 
 	/** 驗證表單 */
@@ -25,7 +27,6 @@ export class AppSettingComponent extends RootComponent {
 			youTubeOffline: false
 		}
 	);
-
 
 
 	init(): void {

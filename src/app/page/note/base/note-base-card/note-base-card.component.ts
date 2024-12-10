@@ -40,7 +40,7 @@ export class NoteBaseCardComponent extends NoteBaseComponent {
 	 */
 	userEdit(): void {
 
-		console.log('Data:', this.item);
+		console.log('Edit Data:', this.item);
 
 		if (this.item.id) {
 			this.toEditPage(this.item.id);

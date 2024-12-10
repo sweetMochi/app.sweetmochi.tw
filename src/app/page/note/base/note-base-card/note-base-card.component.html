@@ -1,10 +1,15 @@
 <mat-card class="card" appearance="outlined">
     <mat-card-header>
         <div mat-card-avatar class="card-icon"></div>
+
+        <!-- 標題與日期 開始 -->
         <div class="headline">
             <mat-card-title [textContent]="item.title"></mat-card-title>
             <mat-card-subtitle [textContent]="item.date"></mat-card-subtitle>
         </div>
+        <!-- 標題與日期 結束 -->
+
+        <!-- 更多選單 開始 -->
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
             <mat-icon>more_vert</mat-icon>
         </button>
@@ -18,6 +23,8 @@
                 <span>Delete</span>
             </button>
         </mat-menu>
+        <!-- 更多選單 結束 -->
+
     </mat-card-header>
     @if (item.image) {
         <img mat-card-image [src]="item.image" [alt]="item.title">

@@ -43,12 +43,8 @@ export class AppNoteListComponent extends NoteBaseComponent {
 	 * @param id 序號
 	 */
 	userDelete(id: string): void {
-
-		let api = `${API_LIST.NOTE_DELETE}/${id}`;
-
-		// 後端請求
 		this.httpService.get(
-			api,
+			`${API_LIST.NOTE_DELETE}/${id}`,
 			null,
 			() => {
 				// 顯示刪除成功
