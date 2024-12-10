@@ -11,9 +11,7 @@ import { WidgetService } from './widget.service';
 /**
  * 連線服務
  */
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class HttpService {
 
 

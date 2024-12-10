@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
-import { HttpService } from '../base/service/http.service';
-import { WidgetService } from '../base/service/widget.service';
-import { NavList } from '../base/type/base.type';
+import { RootComponent } from '../root/root.component';
+import { NavList } from '../root/type/base.type';
 
 
 
@@ -14,7 +13,7 @@ import { NavList } from '../base/type/base.type';
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.less'
 })
-export class AppComponent implements OnInit {
+export class AppComponent extends RootComponent {
 
 
 	/** 側欄元件 */
@@ -39,24 +38,17 @@ export class AppComponent implements OnInit {
 	];
 
 
-	constructor(
-		private router: Router,
-		private http: HttpService,
-		private widget: WidgetService
-	) { }
-
-
-	ngOnInit(): void {
+	init(): void {
 
 		// 取得 API Key 並進行例外處理
-		this.http.apiKey().catch(() => {
-			this.widget.snackBar('Init error');
+		this.httpService.apiKey().catch(() => {
+			this.widgetService.snackBar('Init error');
 		});
 
 		// 關注路由事件
 		this.router.events.pipe(
-			filter((e): e is NavigationEnd => e instanceof NavigationEnd)
-		).subscribe(() => {
+			filter(e => e instanceof NavigationEnd)
+		).subscribe(e => {
 			// 關閉導覽列
 			this.sidenav.close();
 			// 取得當前網址

@@ -9,9 +9,7 @@ import { PopupConfirmComponent } from '../../app/base/popup-confirm/popup-confir
 /**
  * 通用元件
  */
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class WidgetService {
 
 	readonly dialog = inject(MatDialog);

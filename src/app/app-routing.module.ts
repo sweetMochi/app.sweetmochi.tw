@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppNoteNewComponent } from './page/note/note-new/note-new.component';
+import { AppNoteListComponent } from './page/note/note-list/note-list.component';
 import { AppNotePageComponent } from './page/note/note-page/note-page.component';
-import { AppNoteComponent } from './page/note/note.component';
 import { AppSettingComponent } from './page/setting/setting.component';
 import { AppYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-thumbnail.component';
 
@@ -12,11 +11,11 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				component: AppNoteComponent
+				component: AppNoteListComponent
 			},
 			{
 				path: 'new',
-				component: AppNoteNewComponent
+				component: AppNotePageComponent
 			},
 			{
 				path: ':id',

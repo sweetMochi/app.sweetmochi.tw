@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { filter, Subject, takeUntil } from 'rxjs';
-import { YOUTUBE_URL, YOUTUBE_URL_SHORT } from '../../../base/const/youtube.const';
-import { ValidatorService } from '../../../base/service/validator.service';
-import { WidgetService } from '../../../base/service/widget.service';
-import { YoutubeService } from '../../../base/service/youtube.service';
-import { UrlValidationErrorsType, ValidationErrorsType, YoutubeValidationErrorsType } from '../../../base/type/error.type';
-import { YouTubeThumbnailList } from '../../../base/type/youtube.type';
+import { YOUTUBE_URL, YOUTUBE_URL_SHORT } from '../../../root/const/youtube.const';
+import { ValidatorService } from '../../../root/service/validator.service';
+import { WidgetService } from '../../../root/service/widget.service';
+import { YoutubeService } from '../../../root/service/youtube.service';
+import { UrlValidationErrorsType, ValidationErrorsType, YoutubeValidationErrorsType } from '../../../root/type/error.type';
+import { YouTubeThumbnailList } from '../../../root/type/youtube.type';
 
 
 

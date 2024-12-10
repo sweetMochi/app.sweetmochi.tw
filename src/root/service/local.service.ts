@@ -6,15 +6,9 @@ import { LocalStorageKey } from '../type/base.type';
 /**
  * 本地服務
  */
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class LocalService {
 
-
-
-	constructor(
-	) {}
 
 
 	/**

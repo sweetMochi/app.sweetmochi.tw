@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { BrowserModule } from '@angular/platform-browser';
@@ -22,33 +22,35 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 
-import { DATE_FORMATS } from '../base/const/base.const';
+import { DATE_FORMATS } from '../root/const/base.const';
 
 
-import { DataNoteInterceptor } from '../base/interceptor/note.interceptor';
-import { TestInterceptor } from '../base/interceptor/test.interceptor';
+import { DataNoteInterceptor } from '../root/interceptor/note.interceptor';
+import { TestInterceptor } from '../root/interceptor/test.interceptor';
+import { HttpService } from '../root/service/http.service';
+import { LocalService } from '../root/service/local.service';
+import { WidgetService } from '../root/service/widget.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
+
 import { PopupConfirmComponent } from './base/popup-confirm/popup-confirm.component';
-
-
 import { NoteBaseCardComponent } from './page/note/base/note-base-card/note-base-card.component';
-import { NoteEditComponent } from './page/note/base/note-edit/note-edit.component';
-import { AppNoteNewComponent } from './page/note/note-new/note-new.component';
+import { NoteBaseEditComponent } from './page/note/base/note-base-edit/note-base-edit.component';
+import { AppNoteListComponent } from './page/note/note-list/note-list.component';
 import { AppNotePageComponent } from './page/note/note-page/note-page.component';
-import { AppNoteComponent } from './page/note/note.component';
 import { AppSettingComponent } from './page/setting/setting.component';
 import { AppYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-thumbnail.component';
+
 
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		NoteBaseCardComponent,
-		NoteEditComponent,
-		AppNoteNewComponent,
+		NoteBaseEditComponent,
 		AppNotePageComponent,
-		AppNoteComponent,
+		AppNoteListComponent,
 		AppSettingComponent,
 		AppYoutubeThumbnailComponent,
 		PopupConfirmComponent,
@@ -89,6 +91,9 @@ import { AppYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-t
 		MatToolbarModule,
 	],
 	providers: [
+		HttpService,
+		WidgetService,
+		LocalService,
 		provideAnimationsAsync(),
 		provideMomentDateAdapter(DATE_FORMATS),
 		provideHttpClient(
@@ -107,4 +112,4 @@ import { AppYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-t
 	],
 	bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

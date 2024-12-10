@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NoteData } from '../../../../../base/type/base.type';
+import { NoteData } from '../../../../../root/type/base.type';
 import { NoteBaseComponent } from '../note-base.component';
 
 
@@ -54,14 +54,14 @@ export class NoteBaseCardComponent extends NoteBaseComponent {
 	 */
 	userDelete(): void {
 
-		this.widget.popConfirm(
+		super.widgetService.popConfirm(
 			'Are you sure to delete this note?',
 			() => {
 				let id = this.item.id;
 
 				// 如果沒有傳入序號
 				if (!id) {
-					this.widget.snackBar('Data invalid');
+					super.widgetService.snackBar('Data invalid');
 					this.error.emit();
 					return;
 				}

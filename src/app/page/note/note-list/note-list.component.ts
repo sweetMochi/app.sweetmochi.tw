@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { Validators } from '@angular/forms';
-import { API_LIST } from '../../../base/const/api-list.const';
-import { NoteData } from '../../../base/type/base.type';
-import { NoteBaseComponent } from './base/note-base.component';
+import { API_LIST } from '../../../../root/const/api-list.const';
+import { NoteData } from '../../../../root/type/base.type';
+import { NoteBaseComponent } from '../base/note-base.component';
 
 
 
@@ -11,11 +10,11 @@ import { NoteBaseComponent } from './base/note-base.component';
  */
 @Component({
 	standalone: false,
-	selector: 'page-note',
-	templateUrl: './note.component.html',
-	styleUrl: './note.component.less'
+	selector: 'app-note-list',
+	templateUrl: './note-list.component.html',
+	styleUrl: './note-list.component.less'
 })
-export class AppNoteComponent extends NoteBaseComponent {
+export class AppNoteListComponent extends NoteBaseComponent {
 
 
 	/** 筆記列表 */
@@ -31,7 +30,7 @@ export class AppNoteComponent extends NoteBaseComponent {
 	 * 取得筆記列表
 	 */
 	updateList(): void {
-		this.http.get<NoteData[]>(
+		super.httpService.get<NoteData[]>(
 			API_LIST.NOTE_GET,
 			null,
 			data => this.list = data
@@ -48,12 +47,12 @@ export class AppNoteComponent extends NoteBaseComponent {
 		let api = `${API_LIST.NOTE_DELETE}/${id}`;
 
 		// 後端請求
-		this.http.get(
+		this.httpService.get(
 			api,
 			null,
 			() => {
 				// 顯示刪除成功
-				this.widget.snackBar('Delete successful');
+				super.widgetService.snackBar('Delete successful');
 				// 更新列表
 				this.updateList();
 			}

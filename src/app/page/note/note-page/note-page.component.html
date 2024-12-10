@@ -1,7 +1,7 @@
 @if (data) {
-    <note-edit
-        type="patch"
+    <note-base-edit
+        [type]="cardType"
         [item]="data"
-        (action)="userPatch($event)"
-    ></note-edit>
+        (action)="userAction($event)"
+    ></note-base-edit>
 }

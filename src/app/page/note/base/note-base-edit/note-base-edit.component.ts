@@ -2,9 +2,9 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { NoteData, NoteKey } from '../../../../../base/type/base.type';
-import { NoteValidationErrors } from '../../../../../base/type/error.type';
-import { HttpMothod } from '../../../../../base/type/http.type';
+import { NoteData, NoteKey } from '../../../../../root/type/base.type';
+import { NoteValidationErrors } from '../../../../../root/type/error.type';
+import { HttpMothod } from '../../../../../root/type/http.type';
 import { NoteBaseComponent } from '../note-base.component';
 
 
@@ -14,12 +14,12 @@ import { NoteBaseComponent } from '../note-base.component';
  */
 @Component({
 	standalone: false,
-	selector: 'note-edit',
-	templateUrl: './note-edit.component.html',
-	styleUrl: './note-edit.component.less'
+	selector: 'note-base-edit',
+	templateUrl: './note-base-edit.component.html',
+	styleUrl: './note-base-edit.component.less'
 })
-export class NoteEditComponent extends NoteBaseComponent {
-	@ViewChild('fileUpload') fileUpload: ElementRef | null = null;
+export class NoteBaseEditComponent extends NoteBaseComponent {
+	@ViewChild('fileUpload') fileUpload?: ElementRef;
 
 	/** 傳入資料 */
 	@Input() item: NoteData = {
@@ -124,9 +124,8 @@ export class NoteEditComponent extends NoteBaseComponent {
 	/**
 	 * 返回檔案 input HTML 結構
 	 */
-	get fileHtml(): HTMLInputElement {
-		let html = this.fileUpload?.nativeElement as HTMLInputElement;
-		return html;
+	get fileHtml(): HTMLInputElement | null {
+		return this.fileUpload ? this.fileUpload.nativeElement : null;
 	}
 
 

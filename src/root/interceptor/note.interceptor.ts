@@ -87,6 +87,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
      * @param id 編號
      */
     private getRq(id?: string): Observable<HttpEvent<any>> {
+
         // 如果有 ID
         if (id) {
             // 從本地取得資料

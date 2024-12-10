@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NotePageComponent } from './note-page.component';
+import { AppNotePageComponent } from './note-page.component';
 
-describe('NotePageComponent', () => {
-  let component: NotePageComponent;
-  let fixture: ComponentFixture<NotePageComponent>;
+describe('AppNotePageComponent', () => {
+  let component: AppNotePageComponent;
+  let fixture: ComponentFixture<AppNotePageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [NotePageComponent]
+      declarations: [AppNotePageComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NotePageComponent);
+    fixture = TestBed.createComponent(AppNotePageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

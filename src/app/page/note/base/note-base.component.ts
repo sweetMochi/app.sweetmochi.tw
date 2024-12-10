@@ -1,8 +1,5 @@
-import { Directive, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpService } from '../../../../base/service/http.service';
-import { WidgetService } from '../../../../base/service/widget.service';
+import { Directive } from '@angular/core';
+import { RootComponent } from '../../../../root/root.component';
 
 
 
@@ -10,27 +7,8 @@ import { WidgetService } from '../../../../base/service/widget.service';
  * 記事本通用功能
  */
 @Directive()
-export abstract class NoteBaseComponent implements OnInit {
+export abstract class NoteBaseComponent extends RootComponent {
 
-
-	constructor(
-		public http: HttpService,
-		public router: Router,
-		public route: ActivatedRoute,
-		public widget: WidgetService,
-		public formBuilder: FormBuilder,
-	) { }
-
-
-	ngOnInit(): void {
-		this.init();
-	}
-
-
-	/**
-	 * 初始化
-	 */
-	abstract init(): void;
 
 
 	/**
