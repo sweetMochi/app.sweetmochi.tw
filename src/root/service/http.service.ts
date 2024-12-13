@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { catchError, EMPTY, retry, throwError } from 'rxjs';
 import { API_STATUS } from '../const/api-status.const';
 import { API_URL, HTTP_RETRY_TIMES } from '../const/base.const';
@@ -13,6 +13,8 @@ import { WidgetService } from './widget.service';
  */
 @Injectable()
 export class HttpService {
+    private widgetService = inject(WidgetService);
+    private http = inject(HttpClient);
 
 
     /** 儲存 API Key */
@@ -21,11 +23,6 @@ export class HttpService {
     /** http 正則表達，開頭為 http 或 https */
     readonly httpRegex = '^https?://';
 
-
-	constructor(
-		private http: HttpClient,
-		private widget: WidgetService
-	) {}
 
 
     /**
@@ -152,9 +149,8 @@ export class HttpService {
             reject(data);
         } else if (reject === undefined) {
             // 預設使用 snack bar 提醒
-            this.widget.snackBar(data.desc);
+            this.widgetService.snackBar(data.desc);
         }
-
     }
 
 

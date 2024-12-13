@@ -1,7 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { RootComponent } from '../../../root/root.component';
+import { Component } from '@angular/core';
 import { LocalStorageKey } from '../../../root/type/base.type';
+import { FormComponent } from '../../base/form.component';
 
 
 
@@ -14,8 +13,7 @@ import { LocalStorageKey } from '../../../root/type/base.type';
 	templateUrl: './setting.component.html',
 	styleUrl: './setting.component.less'
 })
-export class AppSettingComponent extends RootComponent {
-	formBuilder = inject(FormBuilder);
+export class AppSettingComponent extends FormComponent {
 
 
 	/** 驗證表單 */
@@ -31,8 +29,8 @@ export class AppSettingComponent extends RootComponent {
 
 	init(): void {
 		// 從本地資料取得設定
-		this.formGroup.controls.apiOffline.setValue(this.localService.get('apiOffline') || false);
-		this.formGroup.controls.youTubeOffline.setValue(this.localService.get('youTubeOffline') || false);
+		this.formGroup.controls.apiOffline.setValue(super.local.get('apiOffline') || false);
+		this.formGroup.controls.youTubeOffline.setValue(super.local.get('youTubeOffline') || false);
 	}
 
 
@@ -43,7 +41,7 @@ export class AppSettingComponent extends RootComponent {
 	userChange(key: LocalStorageKey): void {
 
 		// 修改本地儲存設定
-		this.localService.set<boolean>(key, this.formGroup.controls[key as 'youTubeOffline' | 'apiOffline'].value || false);
+		super.local.set<boolean>(key, this.formGroup.controls[key as 'youTubeOffline' | 'apiOffline'].value || false);
 
 		// 如果為設定 API 離線模式
 		// 並且離線模式設定為 true

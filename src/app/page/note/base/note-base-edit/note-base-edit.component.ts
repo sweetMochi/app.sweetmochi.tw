@@ -1,11 +1,11 @@
-import { Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { NoteData, NoteKey } from '../../../../../root/type/base.type';
 import { NoteValidationErrors } from '../../../../../root/type/error.type';
 import { HttpMothod } from '../../../../../root/type/http.type';
-import { NoteBaseComponent } from '../note-base.component';
+import { FormComponent } from '../../../../base/form.component';
 
 
 
@@ -18,8 +18,7 @@ import { NoteBaseComponent } from '../note-base.component';
 	templateUrl: './note-base-edit.component.html',
 	styleUrl: './note-base-edit.component.less'
 })
-export class NoteBaseEditComponent extends NoteBaseComponent {
-	formBuilder = inject(FormBuilder);
+export class NoteBaseEditComponent extends FormComponent {
 	@ViewChild('fileUpload') fileUpload!: ElementRef;
 
 	/** 傳入資料 */
@@ -68,9 +67,6 @@ export class NoteBaseEditComponent extends NoteBaseComponent {
 			tag: [
 				[] as string[]
 			]
-		},
-		{
-			updateOn: 'submit'
 		}
 	);
 

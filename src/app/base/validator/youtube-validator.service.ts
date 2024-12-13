@@ -1,73 +1,25 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { YOUTUBE_HOST_LIST } from '../const/youtube.const';
-import { DateValidationErrors, UrlValidationErrors, YoutubeValidationErrors } from '../type/error.type';
-import { YoutubeService } from './youtube.service';
-import { HttpService } from './http.service';
-import { DATE_REGEX, URL_REGEX } from '../const/base.const';
-import { WidgetService } from './widget.service';
+import { URL_REGEX } from '../../../root/const/base.const';
+import { YOUTUBE_HOST_LIST } from '../../../root/const/youtube.const';
+import { RootService } from '../../../root/root.service';
+import { YoutubeValidationErrors } from '../../../root/type/error.type';
+import { YoutubeService } from '../service/youtube.service';
 
 
 
 /**
  * 驗證方法
  */
-@Injectable({
-    providedIn: 'root'
-})
-export class ValidatorService {
-
-	constructor(
-        private widget: WidgetService,
-        private httpService: HttpService,
-        private youTubeService: YoutubeService
-	) {}
-
-
-    /**
-     * 日期驗證
-     */
-    get date(): ValidatorFn {
-        return (control: AbstractControl): ValidationErrors | null => {
-            let value = control.value;
-
-            if (!value) {
-                return null;
-            }
-
-            // 錯誤訊息
-            let error: DateValidationErrors = { 'invalidDate': 'Invalid date' };
-
-            return DATE_REGEX.test(value) ? null : error;
-
-        }
-    }
-
-
-    /**
-     * 網址驗證
-     */
-    get url(): ValidatorFn {
-        return (control: AbstractControl): ValidationErrors | null => {
-            let value = control.value;
-
-            if (!value) {
-                return null;
-            }
-
-            // 錯誤訊息
-            let error: UrlValidationErrors = { 'invalidUrl': 'Invalid URL' };
-
-            return URL_REGEX.test(value) ? null : error;
-
-        }
-    }
+@Injectable()
+export class YoutubeValidatorService extends RootService {
+    youTubeService = inject(YoutubeService);
 
 
     /**
      * 驗證 YouTube 網址
      */
-    get youTubeUrl(): ValidatorFn {
+    get url(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
             let value = control.value;
             let regex = new RegExp(URL_REGEX);
@@ -94,7 +46,7 @@ export class ValidatorService {
     /**
      * 驗證 YouTube 影片是否有效
      */
-    get youTubeVideo(): AsyncValidatorFn {
+    get video(): AsyncValidatorFn {
         return async (control: AbstractControl): Promise<ValidationErrors | null> => {
             let value = control.value;
 
@@ -133,7 +85,7 @@ export class ValidatorService {
                 let msg: YoutubeValidationErrors = { 'YouTubeIsNotAvailable': 'YouTube is not available' };
 
                 // 使用者提醒
-                this.widget.snackBar('YouTube is not available');
+                this.widgetService.snackBar('YouTube is not available');
 
                 return msg;
             }

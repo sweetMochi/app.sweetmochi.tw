@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { SNACK_BAR_FADEOUT_TIME } from '../const/base.const';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PopupConfirmComponent } from '../../app/base/popup-confirm/popup-confirm.component';
+import { SNACK_BAR_FADEOUT_TIME } from '../const/base.const';
 
 
 
@@ -11,13 +11,9 @@ import { PopupConfirmComponent } from '../../app/base/popup-confirm/popup-confir
  */
 @Injectable()
 export class WidgetService {
+	dialog = inject(MatDialog);
+	matSnackBar = inject(MatSnackBar);
 
-	readonly dialog = inject(MatDialog);
-
-
-	constructor(
-		private matSnackBar: MatSnackBar
-	) {}
 
 
 	/**

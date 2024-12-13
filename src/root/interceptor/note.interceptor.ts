@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_STATUS } from '../const/api-status.const';
 import { DATA_URL } from '../const/base.const';
-import { LocalService } from '../service/local.service';
+import { AppLocal } from '../method/local';
 import { ApiStatus, NoteData, NoteKey } from '../type/base.type';
 import { HttpMothod } from '../type/http.type';
 
@@ -21,10 +21,8 @@ export class DataNoteInterceptor implements HttpInterceptor {
     /** POST 請求新增欄位 */
     rqNewKey: NoteKey[] = ['title', 'content', 'date', 'image', 'tag'];
 
-
-    constructor(
-        private local: LocalService
-    ) { }
+    /** 本地 */
+    local = AppLocal;
 
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {

@@ -3,21 +3,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PopupConfirmComponent } from './popup-confirm.component';
 
 describe('PopupConfirmComponent', () => {
-  let component: PopupConfirmComponent;
-  let fixture: ComponentFixture<PopupConfirmComponent>;
+	let component: PopupConfirmComponent;
+	let fixture: ComponentFixture<PopupConfirmComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [PopupConfirmComponent]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [PopupConfirmComponent]
+		})
+			.compileComponents();
 
-    fixture = TestBed.createComponent(PopupConfirmComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(PopupConfirmComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

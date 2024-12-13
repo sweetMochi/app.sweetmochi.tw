@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { throwError } from 'rxjs';
 import { API_URL } from '../const/base.const';
 import { YOUTUBE_API } from '../const/youtube.const';
-import { LocalService } from '../service/local.service';
+import { AppLocal } from '../method/local';
 
 
 
@@ -13,10 +13,8 @@ import { LocalService } from '../service/local.service';
 @Injectable()
 export class TestInterceptor implements HttpInterceptor {
 
-
-    constructor(
-        private local: LocalService
-    ) { }
+    /** 本地方法 */
+    local = AppLocal;
 
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {

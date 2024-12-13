@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { Injector, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { BrowserModule } from '@angular/platform-browser';
@@ -27,9 +27,10 @@ import { DATE_FORMATS } from '../root/const/base.const';
 
 import { DataNoteInterceptor } from '../root/interceptor/note.interceptor';
 import { TestInterceptor } from '../root/interceptor/test.interceptor';
+import { RootService } from '../root/root.service';
 import { HttpService } from '../root/service/http.service';
-import { LocalService } from '../root/service/local.service';
 import { WidgetService } from '../root/service/widget.service';
+import { YoutubeService } from './base/service/youtube.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -91,9 +92,10 @@ import { AppYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-t
 		MatToolbarModule,
 	],
 	providers: [
+		RootService,
 		HttpService,
 		WidgetService,
-		LocalService,
+		YoutubeService,
 		provideAnimationsAsync(),
 		provideMomentDateAdapter(DATE_FORMATS),
 		provideHttpClient(

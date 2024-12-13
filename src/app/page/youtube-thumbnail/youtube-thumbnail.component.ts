@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { YOUTUBE_URL, YOUTUBE_URL_SHORT } from '../../../root/const/youtube.const';
-import { RootComponent } from '../../../root/root.component';
-import { ValidatorService } from '../../../root/service/validator.service';
-import { YoutubeService } from '../../../root/service/youtube.service';
+import { AppValidators } from '../../../root/method/validator';
+import { YoutubeValidatorService } from '../../base/validator/youtube-validator.service';
+import { YoutubeService } from '../../base/service/youtube.service';
 import { UrlValidationErrorsType, ValidationErrorsType, YoutubeValidationErrorsType } from '../../../root/type/error.type';
 import { YouTubeThumbnailList } from '../../../root/type/youtube.type';
+import { FormComponent } from '../../base/form.component';
 
 
 
@@ -19,11 +20,10 @@ import { YouTubeThumbnailList } from '../../../root/type/youtube.type';
 	templateUrl: './youtube-thumbnail.component.html',
 	styleUrl: './youtube-thumbnail.component.less'
 })
-export class AppYoutubeThumbnailComponent extends RootComponent {
+export class AppYoutubeThumbnailComponent extends FormComponent {
 	// 不使用 constructor 方式注入
 	youtubeService = inject(YoutubeService);
-	validatorService = inject(ValidatorService);
-	formBuilder = inject(FormBuilder);
+	youtubeValidator = inject(YoutubeValidatorService);
 
 	/** 取消訂閱 */
 	private unsubscribe = new Subject();
@@ -46,8 +46,8 @@ export class AppYoutubeThumbnailComponent extends RootComponent {
 			/** 網址 */
 			url: [
 				'',
-				[Validators.required, this.validatorService.url, this.validatorService.youTubeUrl],
-				[this.validatorService.youTubeVideo]
+				[Validators.required, AppValidators.url, this.youtubeValidator.url],
+				[this.youtubeValidator.video]
 			]
 		},
 		{

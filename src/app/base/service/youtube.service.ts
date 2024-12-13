@@ -2,20 +2,17 @@
 
 import { Injectable } from '@angular/core';
 import { catchError, EMPTY } from 'rxjs';
-import { YOUTUBE_API, YOUTUBE_THUMBNAIL_HOST, YOUTUBE_URL_SHORT } from '../const/youtube.const';
-import { YouTubeThumbnailList } from '../type/youtube.type';
-import { HttpService } from './http.service';
-import { WidgetService } from './widget.service';
+import { YOUTUBE_API, YOUTUBE_THUMBNAIL_HOST, YOUTUBE_URL_SHORT } from '../../../root/const/youtube.const';
+import { RootService } from '../../../root/root.service';
+import { YouTubeThumbnailList } from '../../../root/type/youtube.type';
 
 
 
 /**
  * Youtube 服務
  */
-@Injectable({
-    providedIn: 'root'
-})
-export class YoutubeService {
+@Injectable()
+export class YoutubeService extends RootService {
 
 
     /** 預覽圖排序 */
@@ -29,13 +26,8 @@ export class YoutubeService {
     };
 
     /** 影片暫存資料 */
-    private videoSave!: GoogleApiYouTubeVideoResource;
+    private videoSave: GoogleApiYouTubeVideoResource | undefined;
 
-
-    constructor(
-        private http: HttpService,
-        private widget: WidgetService
-    ) { }
 
 
     /**
@@ -44,7 +36,7 @@ export class YoutubeService {
      */
     id(val: string): string {
         let id = '';
-        let url = this.http.url(val);
+        let url = this.httpService.url(val);
 
         // 如果為短網址參數
         if (url.hostname === YOUTUBE_URL_SHORT) {
@@ -79,7 +71,7 @@ export class YoutubeService {
     /**
      * 取得影片暫存資料
      */
-    getVideoSave(): GoogleApiYouTubeVideoResource | null {
+    getVideoSave(): GoogleApiYouTubeVideoResource | undefined {
         return this.videoSave;
     }
 
@@ -91,7 +83,7 @@ export class YoutubeService {
     async thumbnailCheck(id: string) {
 
         // 取得 API key
-        let key = await this.http.apiKey();
+        let key = await this.httpService.apiKey();
 
         return new Promise<YouTubeThumbnailList>((resolve, reject) => {
 
@@ -105,10 +97,10 @@ export class YoutubeService {
 
             let url = new URL(`${YOUTUBE_API}?${params}`);
 
-            this.http.getRoot(url.toString()).pipe(
+            this.httpService.getRoot(url.toString()).pipe(
                 catchError(
                     () => {
-                        this.widget.snackBar('YouTube is not available');
+                        this.widgetService.snackBar('YouTube is not available');
                         reject(new Error('YouTube API is not available'));
                         return EMPTY;
                     }
