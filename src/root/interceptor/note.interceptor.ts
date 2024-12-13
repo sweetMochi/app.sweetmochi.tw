@@ -1,5 +1,4 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpParams, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpEvent, HttpInterceptorFn, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_STATUS } from '../const/api-status.const';
 import { DATA_URL } from '../const/base.const';
@@ -12,96 +11,40 @@ import { HttpMothod } from '../type/http.type';
 /**
  * 記事本模擬非同步攔截器
  */
-@Injectable()
-export class DataNoteInterceptor implements HttpInterceptor {
+export const noteInterceptor: HttpInterceptorFn = (req, next) => {
 
     /** POST 請求基本欄位 */
-    rqBaseKey: NoteKey[] = ['title', 'content', 'date'];
-
-    /** POST 請求新增欄位 */
-    rqNewKey: NoteKey[] = ['title', 'content', 'date', 'image', 'tag'];
+    let rqBaseKey: NoteKey[] = ['title', 'content', 'date'];
 
     /** 本地 */
-    local = AppLocal;
+    let local = AppLocal;
 
-
-    intercept(req: HttpRequest<any>, next: HttpHandler) {
-
-        // 預設返回正常 http 請求
-        let rq = next.handle(req);
-
-        // 資料網址
-        // 範例：
-        // /data/note/get
-        // /data/note/get/1
-        // /data/note/post/
-        // /data/note/patch/1
-        // /data/note/delete/1
-        let dataUrl = req.url.split('/');
-
-        // 符合資料網址格式
-        // '/data' 網址開頭
-        if (req.url.indexOf(DATA_URL) === 0) {
-            // 去除 ['', 'data'] 以及其他參數
-            dataUrl = dataUrl.slice(2, 5);
-            // 解構賦值
-            let [page, mothod, id] = dataUrl;
-
-            // 顯示除錯訊息
-            this.debug(...dataUrl as [string, string, string]);
-
-            // 取得方法
-            let httpMethod = mothod.toLowerCase() as HttpMothod;
-
-            // 判斷方法回傳資料
-            switch (httpMethod) {
-
-                case 'get':
-                    rq = this.getRq(id);
-                    break;
-
-                case 'post':
-                    rq = this.postRq(req);
-                    break;
-
-                case 'patch':
-                    rq = this.patchRq(id, req);
-                    break;
-
-                case 'delete':
-                    rq = this.deleteRq(id);
-                    break;
-
-            }
-
-        }
-
-        return rq;
-    }
+    // 預設返回正常 http 請求
+    let rq = next(req);
 
 
     /**
      * 取得方法
      * @param id 編號
      */
-    private getRq(id?: string): Observable<HttpEvent<any>> {
+    function getRq(id?: string): Observable<HttpEvent<any>> {
 
         // 如果有 ID
         if (id) {
             // 從本地取得資料
-            let data: NoteData[] = this.local.get('noteData');
+            let data: NoteData[] = local.get('noteData');
             // 比對 ID 取得筆記
             let target = data.find( item => item.id === id);
             // 如果有取得對應筆記，則返回筆記資料
             // 沒有資料則返回預設錯誤訊息
-            return target ? this.ok(target) : API_STATUS.NO_DATA.http;
+            return target ? ok(target) : API_STATUS.NO_DATA.http;
         }
 
         // 從本地取得資料
-        let data = this.local.get('noteData');
+        let data = local.get('noteData');
         // 如果有取得筆記列表，則返回筆記列表
         // 沒有資料則返回預設錯誤訊息
-        return data ? this.ok(data) : API_STATUS.NO_DATA.http;
+        return data ? ok(data) : API_STATUS.NO_DATA.http;
     }
 
 
@@ -109,19 +52,19 @@ export class DataNoteInterceptor implements HttpInterceptor {
      * 新增方法
      * @param req HTTP 請求
      */
-    private postRq(req: HttpRequest<any>) {
+    function postRq(req: HttpRequest<any>) {
 
         // 檢查是否滿足基本欄位
-        let ok = this.rqBaseKey.every(data => req.params.has(data));
+        let ok = rqBaseKey.every(data => req.params.has(data));
 
         // 如果已滿足
         if (ok) {
 
             // 取得記事本列表
-            let noteList = this.local.get<NoteData[]>('noteData');
+            let noteList = local.get<NoteData[]>('noteData');
 
             // 創建筆記物件
-            let add = this.noteDataRq(req.params);
+            let add = noteDataRq(req.params);
             console.log(`Request post data: `, add);
 
             // 如果筆記列表已存在且已經有資料
@@ -129,10 +72,10 @@ export class DataNoteInterceptor implements HttpInterceptor {
                 // 新增當前資料
                 noteList.push(add);
                 // 更新本地資料
-                this.local.set<NoteData[]>('noteData', noteList);
+                local.set<NoteData[]>('noteData', noteList);
             } else {
                 // 將新增資料當作是第一筆紀錄
-                this.local.set<NoteData[]>('noteData', [add]);
+                local.set<NoteData[]>('noteData', [add]);
             }
 
             // 回覆 OK
@@ -150,7 +93,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
      * @param id 編號
      * @param req HTTP 請求
      */
-    private patchRq(id: string, req: HttpRequest<any>) {
+    function patchRq(id: string, req: HttpRequest<any>) {
 
         if (!id) {
             // 需填寫 ID
@@ -158,7 +101,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
         }
 
         // 檢查是否滿足基本欄位
-        let ok = this.rqBaseKey.every(data => req.params.has(data));
+        let ok = rqBaseKey.every(data => req.params.has(data));
 
         if (!ok) {
             // 資料格式錯誤
@@ -166,7 +109,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
         }
 
         // 從本地取得資料
-        let data: NoteData[] = this.local.get('noteData');
+        let data: NoteData[] = local.get('noteData');
 
         // 比對 ID 序號取得筆記
         let index = data.findIndex( item => item.id === id);
@@ -178,14 +121,14 @@ export class DataNoteInterceptor implements HttpInterceptor {
         }
 
         // 修改筆記物件
-        let edit = this.noteDataRq(req.params, id);
+        let edit = noteDataRq(req.params, id);
         console.log(`Request patch data: `, edit);
 
         // 更新對應資料
         data[index] = edit;
 
         // 更新本地資料
-        this.local.set<NoteData[]>('noteData', data);
+        local.set<NoteData[]>('noteData', data);
 
         // 回覆 OK
         return API_STATUS.OK.http;
@@ -197,7 +140,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
      * 刪除方法
      * @param id 編號
      */
-    private deleteRq(id: string) {
+    function deleteRq(id: string) {
 
         if (!id) {
             // 資料格式錯誤
@@ -207,7 +150,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
         console.log(`Del data: ${id}`);
 
         // 從本地取得資料
-        let data: NoteData[] = this.local.get('noteData');
+        let data: NoteData[] = local.get('noteData');
 
         // 比對 ID 序號取得筆記
         let index = data.findIndex( item => item.id === id);
@@ -222,7 +165,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
         data.splice(index, 1);
 
         // 更新本地資料
-        this.local.set<NoteData[]>('noteData', data);
+        local.set<NoteData[]>('noteData', data);
 
         // 回覆 OK
         return API_STATUS.OK.http;
@@ -235,9 +178,9 @@ export class DataNoteInterceptor implements HttpInterceptor {
      * @param params 參數
      * @param id 序號
      */
-    private noteDataRq(params: HttpParams, id?: string): NoteData {
+    function noteDataRq(params: HttpParams, id?: string): NoteData {
         return {
-            id: id ? id : this.local.id(),
+            id: id ? id : local.id(),
             title: params.get('title') || '',
             content: params.get('content') || '',
             date: params.get('date') || '',
@@ -252,7 +195,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
      * 回覆正常
      * @param data 回覆資料
      */
-    ok(data = {}) {
+    function ok(data = {}) {
         return new ApiStatus('', '', data).http;
     }
 
@@ -263,7 +206,7 @@ export class DataNoteInterceptor implements HttpInterceptor {
      * @param mothod 方法
      * @param id 編號
      */
-    debug(page: string, mothod: string, id?: string): void {
+    function debug(page: string, mothod: string, id?: string): void {
         console.log(`Request page: ${page} and use mothod: ${mothod}`);
 
         if (id) {
@@ -272,4 +215,53 @@ export class DataNoteInterceptor implements HttpInterceptor {
     }
 
 
-}
+
+    // 資料網址
+    // 範例：
+    // /data/note/get
+    // /data/note/get/1
+    // /data/note/post/
+    // /data/note/patch/1
+    // /data/note/delete/1
+    let dataUrl = req.url.split('/');
+
+        // 符合資料網址格式
+        // '/data' 網址開頭
+        if (req.url.indexOf(DATA_URL) === 0) {
+            // 去除 ['', 'data'] 以及其他參數
+            dataUrl = dataUrl.slice(2, 5);
+            // 解構賦值
+            let [page, mothod, id] = dataUrl;
+
+            // 顯示除錯訊息
+            debug(...dataUrl as [string, string, string]);
+
+            // 取得方法
+            let httpMethod = mothod.toLowerCase() as HttpMothod;
+
+            // 判斷方法回傳資料
+            switch (httpMethod) {
+
+                case 'get':
+                    rq = getRq(id);
+                    break;
+
+                case 'post':
+                    rq = postRq(req);
+                    break;
+
+                case 'patch':
+                    rq = patchRq(id, req);
+                    break;
+
+                case 'delete':
+                    rq = deleteRq(id);
+                    break;
+
+            }
+
+        }
+
+
+    return rq;
+};

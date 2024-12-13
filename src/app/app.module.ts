@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
@@ -23,19 +23,20 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 
 import { DATE_FORMATS } from '../root/const/base.const';
-
-
-import { DataNoteInterceptor } from '../root/interceptor/note.interceptor';
-import { TestInterceptor } from '../root/interceptor/test.interceptor';
-import { RootService } from '../root/root.service';
-import { HttpService } from '../root/service/http.service';
-import { WidgetService } from '../root/service/widget.service';
-import { YoutubeService } from './base/service/youtube.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 
-import { PopupConfirmComponent } from './base/popup-confirm/popup-confirm.component';
+import { noteInterceptor } from '../root/interceptor/note.interceptor';
+import { testInterceptor } from '../root/interceptor/test.interceptor';
+import { RootService } from '../root/root.service';
+import { HttpService } from '../root/service/http.service';
+import { WidgetService } from '../root/service/widget.service';
+import { PopupConfirmComponent } from '../root/widget/popup-confirm/popup-confirm.component';
+
+
+import { YoutubeService } from './base/service/youtube.service';
+import { YoutubeValidatorService } from './base/validator/youtube-validator.service';
 import { NoteBaseCardComponent } from './page/note/base/note-base-card/note-base-card.component';
 import { NoteBaseEditComponent } from './page/note/base/note-base-edit/note-base-edit.component';
 import { AppNoteListComponent } from './page/note/note-list/note-list.component';
@@ -96,21 +97,15 @@ import { AppYoutubeThumbnailComponent } from './page/youtube-thumbnail/youtube-t
 		HttpService,
 		WidgetService,
 		YoutubeService,
+		YoutubeValidatorService,
 		provideAnimationsAsync(),
 		provideMomentDateAdapter(DATE_FORMATS),
 		provideHttpClient(
-			withInterceptorsFromDi()
+			withInterceptors([
+				noteInterceptor,
+				testInterceptor,
+			])
 		),
-		{
-			provide: HTTP_INTERCEPTORS,
-			useClass: TestInterceptor,
-			multi: true
-		},
-		{
-			provide: HTTP_INTERCEPTORS,
-			useClass: DataNoteInterceptor,
-			multi: true
-		}
 	],
 	bootstrap: [AppComponent]
 })
