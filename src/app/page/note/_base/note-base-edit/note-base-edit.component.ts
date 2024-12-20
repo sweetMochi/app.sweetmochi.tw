@@ -1,11 +1,11 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { NoteData, NoteKey } from '../../../../../root/type/base.type';
-import { NoteValidationErrors } from '../../../../../root/type/error.type';
-import { HttpMothod } from '../../../../../root/type/http.type';
-import { FormComponent } from '../../../../base/form.component';
+import { dateFormats, HttpMothod, RootModule } from '../../../../../root';
+import { FormComponent } from '../../../../base';
+import { NoteData, NoteKey, NoteValidationErrors } from '../note-base.type';
 
 
 
@@ -13,8 +13,13 @@ import { FormComponent } from '../../../../base/form.component';
  * 筆記編輯
  */
 @Component({
-	standalone: false,
 	selector: 'note-base-edit',
+	providers: [
+		provideMomentDateAdapter(dateFormats),
+	],
+	imports: [
+		RootModule
+	],
 	templateUrl: './note-base-edit.component.html',
 	styleUrl: './note-base-edit.component.less'
 })
@@ -110,7 +115,7 @@ export class NoteBaseEditComponent extends FormComponent {
 		let dateObj = data.value;
 
 		// 轉換日期格式
-		let val = dateObj?.format('YYYY-MM-DD');
+		let val = dateObj?.format(dateFormats.parse.dateInput);
 
 		// 設定日期數值
 		this.formGroup.controls.date.setValue(val || '');

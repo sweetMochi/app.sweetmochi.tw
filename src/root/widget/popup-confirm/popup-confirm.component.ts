@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 
 
@@ -8,7 +8,9 @@ import { MatDialogRef } from '@angular/material/dialog';
  */
 @Component({
 	selector: 'app-popup-confirm',
-	standalone: false,
+	imports: [
+		MatDialogModule
+	],
 	templateUrl: './popup-confirm.component.html',
 	styleUrl: './popup-confirm.component.less'
 })

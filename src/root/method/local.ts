@@ -1,9 +1,12 @@
-import { LocalStorageKey } from '../type/base.type';
+import { LocalStorageKey } from '..';
 
 
 
 /**
  * 本地方法
+ *
+ * 與本地儲存相關的方法都放在這裡
+ *
  */
 export class AppLocal {
 

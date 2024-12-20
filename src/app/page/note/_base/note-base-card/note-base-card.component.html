@@ -32,6 +32,7 @@
     @else {
         <hr>
     }
+    <!-- 標籤列表 開始 -->
     <mat-card-content>
         @if (item.tag?.length) {
             <mat-chip-set class="tag-list">
@@ -42,4 +43,5 @@
         }
         <p [textContent]="item.content"></p>
     </mat-card-content>
+    <!-- 標籤列表 結束 -->
 </mat-card>

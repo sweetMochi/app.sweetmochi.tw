@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
-import { API_LIST } from '../../../../root/const/api-list.const';
-import { NoteData } from '../../../../root/type/base.type';
-import { HttpMothod } from '../../../../root/type/http.type';
-import { NoteBaseComponent } from '../base/note-base.component';
-
+import { NoteBaseComponent, NoteBaseEditComponent, NoteData } from '../_base';
+import { appList, HttpMothod } from '../../../../root';
 
 
 /**
  * 筆記內頁
  */
 @Component({
-	standalone: false,
 	selector: 'app-note-page',
+	imports: [
+		NoteBaseEditComponent
+	],
 	templateUrl: './note-page.component.html',
 	styleUrl: './note-page.component.less'
 })
@@ -50,7 +49,7 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 */
 	getNote(id: string): void {
 		super.httpService.get<NoteData>(
-			`${API_LIST.NOTE_GET}/${id}`,
+			`${appList.noteGet}/${id}`,
 			null,
 			data => this.data = data,
 			status => {
@@ -82,8 +81,8 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 * @param data 筆記資料
 	 */
 	cardPost(data: NoteData): void {
-		this.httpService.get(
-			API_LIST.NOTE_POST,
+		super.httpService.get(
+			appList.notePost,
 			data,
 			() => {
 				// 顯示新增成功
@@ -100,8 +99,8 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 * @param data 筆記資料
 	 */
 	cardPatch(data: NoteData): void {
-		this.httpService.get(
-			`${API_LIST.NOTE_PATCH}/${this.id}`,
+		super.httpService.get(
+			`${appList.notePatch}/${this.id}`,
 			data,
 			() => {
 				// 顯示新增成功

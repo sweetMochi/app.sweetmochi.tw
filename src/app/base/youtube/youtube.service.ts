@@ -2,9 +2,9 @@
 
 import { Injectable } from '@angular/core';
 import { catchError, EMPTY } from 'rxjs';
-import { YOUTUBE_API, YOUTUBE_THUMBNAIL_HOST, YOUTUBE_URL_SHORT } from '../../../root/const/youtube.const';
-import { RootService } from '../../../root/root.service';
-import { YouTubeThumbnailList } from '../../../root/type/youtube.type';
+import { apiYoutube, AppRoot, RootService } from '../../../root';
+import { YouTubeThumbnailList } from './youtube.type';
+import { youtubeThumbnailHost, youtubeUrlShort } from './youtube.const';
 
 
 
@@ -36,10 +36,10 @@ export class YoutubeService extends RootService {
      */
     id(val: string): string {
         let id = '';
-        let url = this.httpService.url(val);
+        let url = AppRoot.url(val);
 
         // 如果為短網址參數
-        if (url.hostname === YOUTUBE_URL_SHORT) {
+        if (url.hostname === youtubeUrlShort) {
             // 從第一層路徑取得影片 ID
             id = url.pathname.split('/')[1];
         } else {
@@ -63,7 +63,7 @@ export class YoutubeService extends RootService {
             return '';
         }
 
-        return `${YOUTUBE_THUMBNAIL_HOST}/${id}/${this.thumbnailMap[size]}.jpg`;
+        return `${youtubeThumbnailHost}/${id}/${this.thumbnailMap[size]}.jpg`;
 
     }
 
@@ -95,7 +95,7 @@ export class YoutubeService extends RootService {
                 }
             );
 
-            let url = new URL(`${YOUTUBE_API}?${params}`);
+            let url = new URL(`${apiYoutube}?${params}`);
 
             this.httpService.getRoot(url.toString()).pipe(
                 catchError(

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NoteData } from '../../../../../root/type/base.type';
+import { RootModule } from '../../../../../root';
 import { NoteBaseComponent } from '../note-base.component';
+import { NoteData } from '../note-base.type';
 
 
 
@@ -8,8 +9,10 @@ import { NoteBaseComponent } from '../note-base.component';
  * 筆記卡牌
  */
 @Component({
-	standalone: false,
 	selector: 'note-base-card',
+	imports: [
+		RootModule
+	],
 	templateUrl: './note-base-card.component.html',
 	styleUrl: './note-base-card.component.less'
 })
@@ -42,6 +45,7 @@ export class NoteBaseCardComponent extends NoteBaseComponent {
 
 		console.log('Edit Data:', this.item);
 
+		// 如果有序號
 		if (this.item.id) {
 			this.toEditPage(this.item.id);
 			return;
@@ -54,6 +58,7 @@ export class NoteBaseCardComponent extends NoteBaseComponent {
 	 */
 	userDelete(): void {
 
+		// 顯示確認視窗
 		super.widgetService.popConfirm(
 			'Are you sure to delete this note?',
 			() => {

@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { PopupConfirmComponent } from '../widget/popup-confirm/popup-confirm.component';
-import { SNACK_BAR_FADEOUT_TIME } from '../const/base.const';
+import { PopupConfirmComponent } from '../widget';
+import { snackBarFadeoutTime } from '../const';
 
 
 
@@ -65,7 +65,7 @@ export class WidgetService {
 			btnName,
 			{
 				horizontalPosition: 'center',
-				duration: SNACK_BAR_FADEOUT_TIME
+				duration: snackBarFadeoutTime
 			}
 		);
 	}

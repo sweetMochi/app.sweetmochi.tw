@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
-import { API_LIST } from '../../../../root/const/api-list.const';
-import { NoteData } from '../../../../root/type/base.type';
-import { NoteBaseComponent } from '../base/note-base.component';
+import { NoteBaseCardComponent, NoteBaseComponent, NoteData } from '../_base';
+import { appList, RootModule } from '../../../../root';
 
 
 
 /**
- * 記事本功能
+ * 筆記本功能
  */
 @Component({
-	standalone: false,
 	selector: 'app-note-list',
+	imports: [
+		RootModule,
+		NoteBaseCardComponent
+	],
 	templateUrl: './note-list.component.html',
 	styleUrl: './note-list.component.less'
 })
@@ -31,7 +33,7 @@ export class AppNoteListComponent extends NoteBaseComponent {
 	 */
 	updateList(): void {
 		super.httpService.get<NoteData[]>(
-			API_LIST.NOTE_GET,
+			appList.noteGet,
 			null,
 			data => this.list = data
 		);
@@ -43,8 +45,8 @@ export class AppNoteListComponent extends NoteBaseComponent {
 	 * @param id 序號
 	 */
 	userDelete(id: string): void {
-		this.httpService.get(
-			`${API_LIST.NOTE_DELETE}/${id}`,
+		super.httpService.get(
+			`${appList.noteDelete}/${id}`,
 			null,
 			() => {
 				// 顯示刪除成功
@@ -60,7 +62,7 @@ export class AppNoteListComponent extends NoteBaseComponent {
 	 * 新增筆記
 	 */
 	userNew(): void {
-		this.toNewPage();
+		super.toNewPage();
 	}
 
 }

@@ -1,5 +1,6 @@
 <mat-sidenav-container class="container">
 
+	<!-- 側欄 開始 -->
 	<mat-sidenav #sidenavMat mode="push">
 		<mat-nav-list>
 			@for (item of nav; track $index) {
@@ -10,10 +11,14 @@
 			}
 		</mat-nav-list>
 	</mat-sidenav>
+	<!-- 側欄 結束 -->
 
+	<!-- 主體 開始 -->
 	<mat-sidenav-content class="content">
+
+		<!-- 頁首 開始 -->
 		<mat-toolbar>
-			<button mat-icon-button class="menu" (click)="toggleAside()" aria-label="icon-button with menu icon">
+			<button mat-icon-button class="menu" (click)="toggleAside()">
 				<mat-icon>menu</mat-icon>
 			</button>
 			<span>Mochi APP</span>
@@ -22,8 +27,15 @@
 				<mat-icon routerLink="/setting">settings</mat-icon>
 			</button>
 		</mat-toolbar>
+		<!-- 頁首 結束 -->
+
+		<!-- 頁面內容 開始 -->
 		<section>
 			<router-outlet></router-outlet>
 		</section>
+		<!-- 頁面內容 結束 -->
+
 	</mat-sidenav-content>
+	<!-- 主體 結束 -->
+
 </mat-sidenav-container>

@@ -1,6 +1,6 @@
 import { Directive, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { RootComponent } from '../../root/root.component';
+import { RootComponent } from '../../root';
 
 
 

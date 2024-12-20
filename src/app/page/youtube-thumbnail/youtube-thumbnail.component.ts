@@ -1,13 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { filter, Subject, takeUntil } from 'rxjs';
-import { YOUTUBE_URL, YOUTUBE_URL_SHORT } from '../../../root/const/youtube.const';
-import { AppValidators } from '../../../root/method/validator';
-import { YoutubeValidatorService } from '../../base/validator/youtube-validator.service';
-import { YoutubeService } from '../../base/service/youtube.service';
-import { UrlValidationErrorsType, ValidationErrorsType, YoutubeValidationErrorsType } from '../../../root/type/error.type';
-import { YouTubeThumbnailList } from '../../../root/type/youtube.type';
-import { FormComponent } from '../../base/form.component';
+import { AppValidators, RootModule, UrlValidationErrorsType, ValidationErrorsType } from '../../../root';
+import { FormComponent, YoutubeService, YouTubeThumbnailList, youtubeUrl, youtubeUrlShort, YoutubeValidationErrorsType, YoutubeValidatorService } from '../../base';
 
 
 
@@ -15,8 +10,10 @@ import { FormComponent } from '../../base/form.component';
  * 取得 YouTube 預覽圖功能
  */
 @Component({
-	standalone: false,
 	selector: 'page-youtube-thumbnail',
+	imports: [
+		RootModule
+	],
 	templateUrl: './youtube-thumbnail.component.html',
 	styleUrl: './youtube-thumbnail.component.less'
 })
@@ -97,6 +94,8 @@ export class AppYoutubeThumbnailComponent extends FormComponent {
 					return;
 				}
 
+				if (this.formError('YouTubeIsNotAvailable'))
+
 				// 清除當前圖片
 				this.imgSrc = '';
 
@@ -118,8 +117,8 @@ export class AppYoutubeThumbnailComponent extends FormComponent {
 		// 網址範例：
 		// youtu.be/92tvv7PgKeI
 		// youtube.com/watch?v=92tvv7PgKeI
-		this.shortUrl = `${YOUTUBE_URL_SHORT}/${id}`;
-		this.webUrl = `${YOUTUBE_URL}/watch?v=${id}`;
+		this.shortUrl = `${youtubeUrlShort}/${id}`;
+		this.webUrl = `${youtubeUrl}/watch?v=${id}`;
 
 		this.videoTitle = this.youtubeService.getVideoSave()?.snippet.title || '';
 	}

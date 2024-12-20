@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { LocalStorageKey } from '../../../root/type/base.type';
-import { FormComponent } from '../../base/form.component';
+import { LocalStorageKey, RootModule } from '../../../root';
+import { FormComponent } from '../../base';
 
 
 
@@ -8,8 +8,10 @@ import { FormComponent } from '../../base/form.component';
  * 設定頁面
  */
 @Component({
-	standalone: false,
 	selector: 'page-setting',
+	imports: [
+		RootModule
+	],
 	templateUrl: './setting.component.html',
 	styleUrl: './setting.component.less'
 })

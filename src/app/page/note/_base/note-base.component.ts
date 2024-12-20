@@ -1,10 +1,10 @@
 import { Directive } from '@angular/core';
-import { RootComponent } from '../../../../root/root.component';
+import { RootComponent } from '../../../../root';
 
 
 
 /**
- * 記事本通用功能
+ * 筆記本通用功能
  */
 @Directive()
 export abstract class NoteBaseComponent extends RootComponent {
@@ -29,7 +29,7 @@ export abstract class NoteBaseComponent extends RootComponent {
 
 
 	/**
-	 * 返回記事本列表
+	 * 返回筆記本列表
 	 */
 	backToList(): void {
 		this.router.navigate(['/note']);

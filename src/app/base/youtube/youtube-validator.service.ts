@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { URL_REGEX } from '../../../root/const/base.const';
-import { YOUTUBE_HOST_LIST } from '../../../root/const/youtube.const';
-import { RootService } from '../../../root/root.service';
-import { YoutubeValidationErrors } from '../../../root/type/error.type';
-import { YoutubeService } from '../service/youtube.service';
+import { AppRoot, urlRegex } from '../../../root';
+import { youtubeHostList } from './youtube.const';
+import { YoutubeService } from './youtube.service';
+import { YoutubeValidationErrors } from './youtube.type';
+
 
 
 
@@ -12,7 +12,7 @@ import { YoutubeService } from '../service/youtube.service';
  * 驗證方法
  */
 @Injectable()
-export class YoutubeValidatorService extends RootService {
+export class YoutubeValidatorService {
     youTubeService = inject(YoutubeService);
 
 
@@ -22,17 +22,17 @@ export class YoutubeValidatorService extends RootService {
     get url(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
             let value = control.value;
-            let regex = new RegExp(URL_REGEX);
+            let regex = new RegExp(urlRegex);
 
             if (!value || !regex.test(value)) {
                 return null;
             }
 
             // 取得建構網址
-            let url = this.httpService.url(value);
+            let url = AppRoot.url(value);
 
             // 是否為 Youtube 的網域
-            let validUrl = YOUTUBE_HOST_LIST.includes(url.hostname);
+            let validUrl = youtubeHostList.includes(url.hostname);
 
             // 錯誤訊息
             let error: YoutubeValidationErrors = { 'invalidYouTubeUrl': 'Invalid YouTube URL' };
@@ -83,9 +83,6 @@ export class YoutubeValidatorService extends RootService {
 
                 // 錯誤訊息
                 let msg: YoutubeValidationErrors = { 'YouTubeIsNotAvailable': 'YouTube is not available' };
-
-                // 使用者提醒
-                this.widgetService.snackBar('YouTube is not available');
 
                 return msg;
             }

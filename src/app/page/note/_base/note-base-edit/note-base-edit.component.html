@@ -36,6 +36,7 @@
                 </mat-form-field>
                 <!-- 輸入內容 結束 -->
 
+                <!-- 選擇日期 開始 -->
                 <mat-form-field class="form-field" appearance="outline">
                     <mat-label>Choose a date</mat-label>
                     <input
@@ -54,6 +55,9 @@
                         <mat-error>Invalid date</mat-error>
                     }
                 </mat-form-field>
+                <!-- 選擇日期 結束 -->
+
+                <!-- 上傳檔案 開始 -->
                 <mat-form-field class="form-field" appearance="outline" (click)="userFile()">
                     <input matInput class="hide-input">
                     <input
@@ -65,6 +69,9 @@
                     />
                     <mat-icon matSuffix>attachment</mat-icon>
                 </mat-form-field>
+                <!-- 上傳檔案 結束 -->
+
+                <!-- 標籤設定 開始 -->
                 <mat-form-field class="form-field" appearance="outline">
                     <mat-label>Note tags</mat-label>
                     <mat-chip-grid #reactiveChip aria-label="Enter reactive form keywords" formControlName="tag">
@@ -83,6 +90,8 @@
                         (matChipInputTokenEnd)="userAddTag($event)"
                     />
                 </mat-form-field>
+                <!-- 標籤設定 結束 -->
+
             </div>
             <button class="send" mat-flat-button>Send</button>
         </form>

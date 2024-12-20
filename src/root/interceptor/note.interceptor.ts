@@ -1,15 +1,15 @@
 import { HttpEvent, HttpInterceptorFn, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_STATUS } from '../const/api-status.const';
-import { DATA_URL } from '../const/base.const';
-import { AppLocal } from '../method/local';
-import { ApiStatus, NoteData, NoteKey } from '../type/base.type';
-import { HttpMothod } from '../type/http.type';
+import { NoteData, NoteKey } from '../../app/page/note/_base/note-base.type';
+import { apiStatus, dataUrl } from '../const';
+import { ApiStatus, AppLocal } from '../method';
+import { HttpMothod } from '../type';
+
 
 
 
 /**
- * 記事本模擬非同步攔截器
+ * 筆記本模擬資料庫攔截器
  */
 export const noteInterceptor: HttpInterceptorFn = (req, next) => {
 
@@ -37,14 +37,14 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
             let target = data.find( item => item.id === id);
             // 如果有取得對應筆記，則返回筆記資料
             // 沒有資料則返回預設錯誤訊息
-            return target ? ok(target) : API_STATUS.NO_DATA.http;
+            return target ? ok(target) : apiStatus.noData.http;
         }
 
         // 從本地取得資料
         let data = local.get('noteData');
         // 如果有取得筆記列表，則返回筆記列表
         // 沒有資料則返回預設錯誤訊息
-        return data ? ok(data) : API_STATUS.NO_DATA.http;
+        return data ? ok(data) : apiStatus.noData.http;
     }
 
 
@@ -60,7 +60,7 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
         // 如果已滿足
         if (ok) {
 
-            // 取得記事本列表
+            // 取得筆記本列表
             let noteList = local.get<NoteData[]>('noteData');
 
             // 創建筆記物件
@@ -79,11 +79,11 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
             }
 
             // 回覆 OK
-            return API_STATUS.OK.http;
+            return apiStatus.ok.http;
         }
 
         // 資料格式錯誤
-        return API_STATUS.DATA_INVALID.http;
+        return apiStatus.dataInvalid.http;
 
     }
 
@@ -97,7 +97,7 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
 
         if (!id) {
             // 需填寫 ID
-            return API_STATUS.ID_REQUIRED.http;
+            return apiStatus.idRequired.http;
         }
 
         // 檢查是否滿足基本欄位
@@ -105,7 +105,7 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
 
         if (!ok) {
             // 資料格式錯誤
-            return API_STATUS.DATA_INVALID.http;
+            return apiStatus.dataInvalid.http;
         }
 
         // 從本地取得資料
@@ -117,7 +117,7 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
         // 如果沒有取得序號
         if (index < 0) {
             // 找不到資料
-            return API_STATUS.DATA_NOT_FOUND.http;
+            return apiStatus.noData.http;
         }
 
         // 修改筆記物件
@@ -131,7 +131,7 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
         local.set<NoteData[]>('noteData', data);
 
         // 回覆 OK
-        return API_STATUS.OK.http;
+        return apiStatus.ok.http;
 
     }
 
@@ -144,7 +144,7 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
 
         if (!id) {
             // 資料格式錯誤
-            return API_STATUS.DATA_INVALID.http;
+            return apiStatus.dataInvalid.http;
         }
 
         console.log(`Del data: ${id}`);
@@ -158,7 +158,7 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
         // 如果沒有取得序號
         if (index < 0) {
             // 找不到資料
-            return API_STATUS.DATA_NOT_FOUND.http;
+            return apiStatus.noData.http;
         }
 
         // 移除指定序號的資料
@@ -168,13 +168,13 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
         local.set<NoteData[]>('noteData', data);
 
         // 回覆 OK
-        return API_STATUS.OK.http;
+        return apiStatus.ok.http;
 
     }
 
 
     /**
-     * 記事本請求資料
+     * 筆記本請求資料
      * @param params 參數
      * @param id 序號
      */
@@ -223,18 +223,18 @@ export const noteInterceptor: HttpInterceptorFn = (req, next) => {
     // /data/note/post/
     // /data/note/patch/1
     // /data/note/delete/1
-    let dataUrl = req.url.split('/');
+    let url = req.url.split('/');
 
         // 符合資料網址格式
         // '/data' 網址開頭
-        if (req.url.indexOf(DATA_URL) === 0) {
+        if (req.url.indexOf(dataUrl) === 0) {
             // 去除 ['', 'data'] 以及其他參數
-            dataUrl = dataUrl.slice(2, 5);
+            url = url.slice(2, 5);
             // 解構賦值
-            let [page, mothod, id] = dataUrl;
+            let [page, mothod, id] = url;
 
             // 顯示除錯訊息
-            debug(...dataUrl as [string, string, string]);
+            debug(...url as [string, string, string]);
 
             // 取得方法
             let httpMethod = mothod.toLowerCase() as HttpMothod;

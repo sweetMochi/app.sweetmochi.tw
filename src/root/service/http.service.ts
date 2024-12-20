@@ -1,9 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, EMPTY, retry, throwError } from 'rxjs';
-import { API_STATUS } from '../const/api-status.const';
-import { API_URL, HTTP_RETRY_TIMES } from '../const/base.const';
-import { ApiKey, DataApi } from '../type/base.type';
+import { apiStatus, apiUrl, httpRetryTimes } from '../const';
+import { ApiKey, DataApi } from '../type';
 import { WidgetService } from './widget.service';
 
 
@@ -16,29 +15,8 @@ export class HttpService {
     private widgetService = inject(WidgetService);
     private http = inject(HttpClient);
 
-
     /** 儲存 API Key */
     private apiKeySave = '';
-
-    /** http 正則表達，開頭為 http 或 https */
-    readonly httpRegex = '^https?://';
-
-
-
-    /**
-     * 重建 URL 物件
-     * @param url 網址
-     */
-    url(url: string): URL {
-
-        // 網址正則表達
-        let httpRegex = new RegExp(this.httpRegex);
-        // 如果沒有 http 或 https 則加入 https
-        let urlRaw = httpRegex.test(url) ? url : `https://${url}`;
-
-        return new URL(urlRaw);
-
-    }
 
 
 	/**
@@ -63,7 +41,7 @@ export class HttpService {
             }
 
             // 沒有的話則嘗試取得 API Key
-            this.getRoot<ApiKey>(`${API_URL}/`).pipe(
+            this.getRoot<ApiKey>(`${apiUrl}/`).pipe(
                 // 例外處理
                 catchError(
                     (error: HttpErrorResponse) => {
@@ -92,7 +70,7 @@ export class HttpService {
                 responseType: 'json'
             }
         ).pipe(
-            retry(HTTP_RETRY_TIMES),
+            retry(httpRetryTimes),
             catchError(this.handleError)
         );
     }
@@ -115,10 +93,10 @@ export class HttpService {
                 params: rq ? rq : {}
             }
         ).pipe(
-            retry(HTTP_RETRY_TIMES),
+            retry(httpRetryTimes),
             catchError(data => {
                 // 提醒回調方法
-                this.rejectAction(API_STATUS.DATA_NOT_FOUND, reject);
+                this.rejectAction(apiStatus.connectFailure, reject);
                 // 詳細錯誤
                 return throwError(() => new Error(data));
             })

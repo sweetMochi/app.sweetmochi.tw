@@ -1,4 +1,26 @@
-import { DataApi } from './base.type';
+
+
+
+/**
+ * API 型別
+ */
+export interface ApiKey {
+    /** API Key */
+    apiKey: string;
+}
+
+
+/**
+ * 後端 API 格式
+ */
+export interface DataApi {
+    /** 錯誤代碼 */
+    code: string;
+    /** 錯誤說明 */
+    desc?: string;
+    /** 回傳資料 */
+    data?: any;
+}
 
 
 /**
@@ -15,7 +37,7 @@ export type HttpMothod = 'get' | 'post' | 'patch' | 'delete';
 /**
  * HTTP 請求
  */
-export interface HttpRq {
+export interface HttpRs {
     /** 狀態 */
     status: number;
     /** 內容 */
