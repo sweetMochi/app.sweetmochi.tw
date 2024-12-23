@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
 			withInterceptors([
 				apiInterceptor,
 				noteInterceptor,
-			]),
+			])
 		),
 		provideAnimationsAsync(),
 	]

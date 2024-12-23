@@ -87,6 +87,7 @@ export class YoutubeService extends RootService {
 
         return new Promise<YouTubeThumbnailList>((resolve, reject) => {
 
+            // 建構請求資料
             let params = new URLSearchParams(
                 {
                     id,
@@ -97,25 +98,32 @@ export class YoutubeService extends RootService {
 
             let url = new URL(`${apiYoutube}?${params}`);
 
-            this.httpService.getRoot(url.toString()).pipe(
+            // 取得 Youtube 回傳 API 資料
+            this.httpService.getJson<GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>>(
+                url.toString()
+            ).pipe(
                 catchError(
                     () => {
+                        // 如果發生錯誤
                         this.widgetService.snackBar('YouTube is not available');
                         reject(new Error('YouTube API is not available'));
                         return EMPTY;
                     }
                 )
-            ).subscribe(res => {
-                let data = res as GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>;
+            ).subscribe(data => {
 
+                // 如果沒有回傳資料
                 if (!data.items.length) {
                     reject(new Error('YouTube video not available'));
                     return;
                 }
 
+                // 依照預覽圖排序由大到小，尋找 API 中對應的縮圖
                 let key = this.thumbnailList.find(item => data.items[0].snippet.thumbnails[item]);
 
+                // 如果有找到縮圖
                 if (key) {
+                    // 暫存縮圖資料
                     this.videoSave = data.items[0];
                     resolve(key);
                     return;

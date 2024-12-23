@@ -41,7 +41,7 @@ export class HttpService {
             }
 
             // 沒有的話則嘗試取得 API Key
-            this.getRoot<ApiKey>(`${apiUrl}/`).pipe(
+            this.getJson<ApiKey>(`${apiUrl}/`).pipe(
                 // 例外處理
                 catchError(
                     (error: HttpErrorResponse) => {
@@ -60,10 +60,10 @@ export class HttpService {
 
 
     /**
-     * 接口 get 方法
+     * 取得 JSON 方法
      * @param url 網址
      */
-    getRoot<T>(url: string) {
+    getJson<T>(url: string) {
         return this.http.get<T>(
             url,
             {

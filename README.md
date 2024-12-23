@@ -8,18 +8,16 @@
 ```
 app.sweetmochi.tw
 ├── app
-│   ├── app.component.html
-│   ├── app.component.less
-│   ├── app.component.ts
-│   ├── app.config.ts
-│   ├── app.const.ts
-│   ├── app.routes.ts
-│   ├── app.type.ts
+│   ├── app.component.ts 路由事件與側欄功能
+│   ├── app.config.ts Interceptor 設定
+│   ├── app.const.ts 全域服務設定
+│   ├── app.routes.ts 路由設定
+│   ├── app.type.ts 側欄型別
 │   ├── base
-│   │   ├── form.component.ts
+│   │   ├── form.component.ts 表單基礎功能
 │   │   └── youtube
-│   │       ├── youtube-validator.service.ts
-│   │       ├── youtube.const.ts
+│   │       ├── youtube-validator.service.ts Youtube 非同步驗證方法
+│   │       ├── youtube.const.ts Youtube 網址設定參數
 │   │       ├── youtube.service.ts
 │   │       └── youtube.type.ts
 │   └── page
