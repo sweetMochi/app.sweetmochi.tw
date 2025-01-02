@@ -71,16 +71,31 @@ app.sweetmochi.tw
 └── styles.less 樣式表
 ```
 
-## 基礎邏輯
+## 底層配置
+
+![image info](./public/readme/root-service.png)
+
+### 概要
++ `HttpService` 需要 `WidgetService` 來顯示連線錯誤提醒
++ `HttpService` 封裝 `HttpClient` 後端回傳的資料格式
++ `RootService` 調用 `HttpClient` 寫入其他接口的互動方法
++ `AppComponent` 或其他元件繼承 `RootComponent` 所有功能
++ `YoutubeService` 或其他服務繼承 `RootService` 所有功能
+
+## 功能邏輯
 
 ![image info](./public/readme/site-map.png)
 
-+ root.component 實作 angular init，並且加入通用 service，使繼承的功能可以使用 super 調用 root.component 定義的方法
-+ form.component 以 root.component 為基礎，增加 FormBuilder 的功能
-+ note-base.component 作為記事本功能的抽象繼承，除了 root.component 功能也額外增加筆記本路由方法
+### 概要
++ `RootComponent` 實作 `angular init`，並且加入通用 service，使繼承的功能可以使用 super 調用 RootComponent 定義的方法
++ `FormComponent` 以 `RootComponent` 為基礎，增加 `FormBuilder` 的功能
++ `NoteBaseComponent` 作為記事本功能的抽象繼承，除了 `RootComponent` 功能也額外增加筆記本路由方法
 
-## Development server
+### 元件設計
++ `NoteBaseCard` 為筆記卡牌顯示元件，提供筆記本列表顯示卡牌效果，有繼承 `NoteBaseComponent` 跳轉頁面功能
++ `NoteBaseEdit` 是筆記編輯或新增卡牌的元件，繼承 `FormComponent` 表單驗證的功能
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.1.
+### 頁面功能
++ `AppNoteList` 做為筆記本列表頁面，繼承 `NoteBaseComponent` 跳轉頁面方法，並且擁有 `NoteBaseCardComponent` 用來顯示卡牌資料
++ `AppNotePage` 是單獨的筆記本頁面，可以編輯指定的記事本資料，或是新增全新的筆記，同樣繼承 `NoteBaseComponent` 頁面跳轉的方法，並且擁有 `NoteBaseEditComponent` 可以用來編輯或新增卡牌資料
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
