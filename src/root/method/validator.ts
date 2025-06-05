@@ -16,7 +16,7 @@ export class AppValidators {
     /**
      * 網址驗證
      */
-    static url(): ValidatorFn {
+    static get url(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
             let value = control.value;
 
