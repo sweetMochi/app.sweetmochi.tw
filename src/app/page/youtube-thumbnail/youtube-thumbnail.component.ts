@@ -94,8 +94,6 @@ export class AppYoutubeThumbnailComponent extends FormComponent {
 					return;
 				}
 
-				if (this.formError('YouTubeIsNotAvailable'))
-
 				// 清除當前圖片
 				this.imgSrc = '';
 

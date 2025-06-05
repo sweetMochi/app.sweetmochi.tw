@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NoteBaseComponent, NoteBaseEditComponent, NoteData } from '../_base';
-import { appList, HttpMothod } from '../../../../root';
+import { apiList, HttpMothod } from '../../../../root';
 
 
 /**
@@ -49,7 +49,7 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 */
 	getNote(id: string): void {
 		super.httpService.get<NoteData>(
-			`${appList.noteGet}/${id}`,
+			`${apiList.noteGet}/${id}`,
 			null,
 			data => this.data = data,
 			status => {
@@ -82,7 +82,7 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 */
 	cardPost(data: NoteData): void {
 		super.httpService.get(
-			appList.notePost,
+			apiList.notePost,
 			data,
 			() => {
 				// 顯示新增成功
@@ -100,7 +100,7 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 */
 	cardPatch(data: NoteData): void {
 		super.httpService.get(
-			`${appList.notePatch}/${this.id}`,
+			`${apiList.notePatch}/${this.id}`,
 			data,
 			() => {
 				// 顯示新增成功

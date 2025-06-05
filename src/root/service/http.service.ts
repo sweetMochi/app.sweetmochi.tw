@@ -80,10 +80,15 @@ export class HttpService {
      * 接口 get 方法
      * @param url 網址
      * @param rq 請求資料
-     * @param resolve 回傳資料
+     * @param action 回傳資料
      * @param reject 回傳錯誤
      */
-    get<T, U = {} | null>(url: string, rq: U, resolve: (data: T) => void, reject?: (data: DataApi) => void): void {
+    get<T, U = {} | null>(
+        url: string,
+        rq: U,
+        action: (data: T) => void,
+        cancel?: (data: DataApi) => void
+    ): void {
         this.http.get<DataApi>(
             url,
             {
@@ -96,7 +101,7 @@ export class HttpService {
             retry(httpRetryTimes),
             catchError(data => {
                 // 提醒回調方法
-                this.rejectAction(apiStatus.connectFailure, reject);
+                this.cancelAction(apiStatus.connectFailure, cancel);
                 // 詳細錯誤
                 return throwError(() => new Error(data));
             })
@@ -105,12 +110,12 @@ export class HttpService {
             // 如果沒有錯誤代碼
             if (res.code === '') {
                 // 返回請求資料
-                resolve(res.data);
+                action(res.data);
                 return;
             }
 
             // 提醒回調方法
-            this.rejectAction(res, reject);
+            this.cancelAction(res, cancel);
         });
     }
 
@@ -118,14 +123,14 @@ export class HttpService {
     /**
      * 提醒回調方法
      * @param data 後端資料
-     * @param reject 錯誤回調
+     * @param cancel 錯誤回調
      */
-    rejectAction(data: DataApi, reject?: (data: DataApi) => void) {
+    cancelAction(data: DataApi, cancel?: (data: DataApi) => void) {
         // 如果有設置錯誤回調
-        if (reject) {
+        if (cancel) {
             // 錯誤回調
-            reject(data);
-        } else if (reject === undefined) {
+            cancel(data);
+        } else if (cancel === undefined) {
             // 預設使用 snack bar 提醒
             this.widgetService.snackBar(data.desc);
         }

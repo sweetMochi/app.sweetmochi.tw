@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NoteBaseCardComponent, NoteBaseComponent, NoteData } from '../_base';
-import { appList, RootModule } from '../../../../root';
+import { apiList, RootModule } from '../../../../root';
 
 
 
@@ -33,7 +33,7 @@ export class AppNoteListComponent extends NoteBaseComponent {
 	 */
 	updateList(): void {
 		super.httpService.get<NoteData[]>(
-			appList.noteGet,
+			apiList.noteGet,
 			null,
 			data => this.list = data
 		);
@@ -46,7 +46,7 @@ export class AppNoteListComponent extends NoteBaseComponent {
 	 */
 	userDelete(id: string): void {
 		super.httpService.get(
-			`${appList.noteDelete}/${id}`,
+			`${apiList.noteDelete}/${id}`,
 			null,
 			() => {
 				// 顯示刪除成功

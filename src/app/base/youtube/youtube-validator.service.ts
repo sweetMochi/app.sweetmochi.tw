@@ -70,7 +70,7 @@ export class YoutubeValidatorService {
                         error = { 'youTubeThumbnailUseStandard': true };
                         break;
 
-                    // 如果是標準畫質
+                    // 如果是較高
                     case 'high':
                         error = { 'youTubeThumbnailUseHigh': true };
                         break;

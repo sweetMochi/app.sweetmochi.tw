@@ -2,7 +2,7 @@
 /**
  * 接口列表
  */
-export const appList = {
+export const apiList = {
 	/** 查詢接口 */
 	noteGet: '/data/note/get',
 	/** 新增接口 */
