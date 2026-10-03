@@ -46,9 +46,6 @@ export class NoteBaseEditComponent extends FormComponent {
 	/** 錯誤回調 */
 	@Output() error = new EventEmitter()
 
-	/** 標籤 */
-	tagList: string[] = []
-
 	/** 驗證表單 */
 	formGroup = this.formBuilder.group({
 		/** 標題 */
@@ -73,7 +70,7 @@ export class NoteBaseEditComponent extends FormComponent {
 				content: this.item.content,
 				date: this.item.date,
 				image: this.item.image || '',
-				tag: this.item.tag || [],
+				tag: [...(this.item.tag || [])],
 			})
 		}
 	}
@@ -180,11 +177,15 @@ export class NoteBaseEditComponent extends FormComponent {
 	 * @param i 排序
 	 */
 	userRemoveTag(i: number): void {
-		if (i < 0 || !this.formGroup.value?.tag?.length) {
+		const tagList = [...(this.formGroup.value.tag || [])]
+
+		if (i < 0 || i >= tagList.length) {
 			return
 		}
 
-		this.formGroup.value.tag.splice(i, 1)
+		tagList.splice(i, 1)
+		this.formGroup.controls.tag.setValue(tagList)
+
 	}
 
 	/**
@@ -195,8 +196,11 @@ export class NoteBaseEditComponent extends FormComponent {
 		let value = (event.value || '').trim()
 
 		// 如果有輸入值
-		if (value && this.formGroup.value?.tag) {
-			this.formGroup.value.tag.push(value)
+		if (value) {
+
+			const tagList = [...(this.formGroup.value.tag || []), value]
+			this.formGroup.controls.tag.setValue(tagList)
+
 		}
 
 		// 清除輸入的標籤文字
