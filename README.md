@@ -73,7 +73,25 @@
 
 ## 底層配置
 
-![image info](./public/readme/root-service.png)
+```mermaid
+classDiagram
+    direction TB
+
+    class RootComponent {
+        <<abstract>>
+    }
+
+    RootComponent <|-- AppComponent : extends
+    RootService <|-- YoutubeService : extends
+
+    RootComponent ..> HttpService : inject
+    RootComponent ..> WidgetService : inject
+    RootService ..> HttpService : inject
+    RootService ..> WidgetService : inject
+    RootService ..> HttpClient : inject
+    HttpService ..> WidgetService : inject
+    HttpService ..> HttpClient : inject
+```
 
 ### 概要
 + `HttpService` 需要 `WidgetService` 來顯示連線錯誤提醒
@@ -84,7 +102,34 @@
 
 ## 功能邏輯
 
-![image info](./public/readme/site-map.png)
+```mermaid
+classDiagram
+    direction TB
+
+    class OnInit {
+        <<interface>>
+    }
+    class RootComponent {
+        <<abstract>>
+    }
+    class NoteBaseComponent {
+        <<abstract>>
+    }
+    class FormComponent {
+        <<abstract>>
+    }
+
+    OnInit <|.. RootComponent : implements
+    RootComponent <|-- NoteBaseComponent : extends
+    RootComponent <|-- FormComponent : extends
+    NoteBaseComponent <|-- AppNoteListComponent : extends
+    NoteBaseComponent <|-- AppNotePageComponent : extends
+    NoteBaseComponent <|-- NoteBaseCardComponent : extends
+    FormComponent <|-- NoteBaseEditComponent : extends
+
+    AppNoteListComponent ..> NoteBaseCardComponent : imports
+    AppNotePageComponent ..> NoteBaseEditComponent : imports
+```
 
 ### 概要
 + `RootComponent` 實作 `angular init`，並且加入通用 service，使繼承的功能可以使用 super 調用 RootComponent 定義的方法
@@ -99,3 +144,96 @@
 + `AppNoteList` 做為筆記本列表頁面，繼承 `NoteBaseComponent` 跳轉頁面方法，並且擁有 `NoteBaseCardComponent` 用來顯示卡牌資料
 + `AppNotePage` 是單獨的筆記本頁面，可以編輯指定的記事本資料，或是新增全新的筆記，同樣繼承 `NoteBaseComponent` 頁面跳轉的方法，並且擁有 `NoteBaseEditComponent` 可以用來編輯或新增卡牌資料
 
+## 筆記本功能循序圖
+
+> `NoteInterceptor` 為前端以 localStorage 模擬的 API，`HttpService` 收到錯誤代碼且未設定錯誤回調時，預設以 snackBar 顯示錯誤訊息
+
+### 新增
+
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant L as NoteList
+    participant P as NotePage
+    participant E as NoteBaseEdit
+    participant I as NoteInterceptor<br/>(Mock API / localStorage)
+
+    U->>L: 點擊新增按鈕
+    L->>P: navigate /note/new
+    P->>P: 網址無 id，type = post
+    P->>E: [item] 帶入空白資料
+    U->>E: 輸入標題、內容、日期、圖片、標籤
+    U->>E: 點擊 Send
+    E-->>P: (action) emit NoteData
+    P->>I: notePost(NoteData)
+    I->>I: 產生 id 並寫入 localStorage
+    I-->>P: ok
+    P->>U: snackBar「Create successful」
+    P->>L: backToList()
+```
+
+### 刪除
+
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant L as NoteList
+    participant C as NoteBaseCard
+    participant I as NoteInterceptor<br/>(Mock API / localStorage)
+
+    U->>C: 點擊選單 Delete
+    C->>U: popConfirm 確認視窗
+    U->>C: 確認刪除
+    C-->>L: (delete) emit id
+    L->>I: noteDelete/{id}
+    I->>I: 從 localStorage 移除
+    I-->>L: ok
+    L->>U: snackBar「Delete successful」
+    L->>I: noteGet（updateList）
+    I-->>L: NoteData[]
+    L->>C: [item] 重新渲染卡片
+```
+
+### 修改
+
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant L as NoteList
+    participant C as NoteBaseCard
+    participant P as NotePage
+    participant E as NoteBaseEdit
+    participant I as NoteInterceptor<br/>(Mock API / localStorage)
+
+    U->>C: 點擊選單 Edit
+    C->>P: navigate /note/{id}
+    P->>P: 網址有 id，type = patch
+    P->>I: noteGet/{id}
+    I-->>P: NoteData
+    P->>E: [item] 帶入筆記資料
+    E->>E: 設定表單預設值
+    U->>E: 修改資料並點擊 Send
+    E-->>P: (action) emit NoteData
+    P->>I: notePatch/{id}(NoteData)
+    I->>I: 更新 localStorage 對應資料
+    I-->>P: ok
+    P->>U: snackBar「Edit successful」
+    P->>L: backToList()
+```
+
+### 查詢
+
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant L as NoteList
+    participant C as NoteBaseCard
+    participant I as NoteInterceptor<br/>(Mock API / localStorage)
+
+    U->>L: 進入 /note
+    L->>I: noteGet
+    I-->>L: NoteData[]
+    loop 每一筆筆記
+        L->>C: [item] 渲染卡片
+    end
+```
