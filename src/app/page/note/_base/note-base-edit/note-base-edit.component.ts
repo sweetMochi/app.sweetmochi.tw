@@ -11,8 +11,8 @@ import { Validators } from '@angular/forms'
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter'
 import { MatChipInputEvent } from '@angular/material/chips'
 import { MatDatepickerInputEvent } from '@angular/material/datepicker'
-import { dateFormats, HttpMothod, RootModule } from '../../../../../root'
-import { FormComponent } from '../../../../base'
+import { dateFormats, HttpMothod, RootModule } from '@/root'
+import { FormComponent } from '@/app/base'
 import { NoteData, NoteKey, NoteValidationErrors } from '../note-base.type'
 
 /**
@@ -66,7 +66,6 @@ export class NoteBaseEditComponent extends FormComponent {
 	init(): void {
 		// 如果有傳入筆記序號
 		if (this.item.id) {
-			this.tagList = this.item.tag || []
 
 			// 設定表單預設值
 			this.formGroup.setValue({
@@ -143,7 +142,7 @@ export class NoteBaseEditComponent extends FormComponent {
 			content: this.formGroup.value.content || '',
 			date: this.formGroup.value.date || '',
 			image: this.formGroup.value.image || '',
-			tag: this.tagList,
+			tag: this.formGroup.value.tag || [],
 		})
 	}
 
@@ -181,11 +180,11 @@ export class NoteBaseEditComponent extends FormComponent {
 	 * @param i 排序
 	 */
 	userRemoveTag(i: number): void {
-		if (i < 0) {
+		if (i < 0 || !this.formGroup.value?.tag?.length) {
 			return
 		}
 
-		this.tagList.splice(i, 1)
+		this.formGroup.value.tag.splice(i, 1)
 	}
 
 	/**
@@ -196,12 +195,12 @@ export class NoteBaseEditComponent extends FormComponent {
 		let value = (event.value || '').trim()
 
 		// 如果有輸入值
-		if (value) {
-			this.tagList.push(value)
+		if (value && this.formGroup.value?.tag) {
+			this.formGroup.value.tag.push(value)
 		}
 
 		// 清除輸入的標籤文字
-		event.chipInput!.clear()
+		event.chipInput.clear()
 	}
 
 	/**

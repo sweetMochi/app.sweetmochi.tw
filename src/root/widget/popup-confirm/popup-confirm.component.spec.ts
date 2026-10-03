@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { PopupConfirmComponent } from './popup-confirm.component';
 
@@ -8,7 +9,10 @@ describe('PopupConfirmComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [PopupConfirmComponent]
+			imports: [PopupConfirmComponent],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} }
+			]
 		})
 			.compileComponents();
 

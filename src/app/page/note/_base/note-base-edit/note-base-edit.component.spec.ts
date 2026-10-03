@@ -1,6 +1,9 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { provideRouter } from '@angular/router';
 import moment from 'moment';
 
 import { NoteBaseEditComponent } from './note-base-edit.component';
@@ -11,13 +14,20 @@ describe('NoteBaseEditComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [NoteBaseEditComponent]
+			imports: [NoteBaseEditComponent],
+			providers: [
+				provideHttpClient(),
+				provideHttpClientTesting(), // 攔截 HTTP 請求，不會真的連線
+				provideRouter([]),
+			]
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(NoteBaseEditComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
+
+	afterEach(() => vi.restoreAllMocks())
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
@@ -52,13 +62,13 @@ describe('NoteBaseEditComponent', () => {
 	});
 
 	it('should trigger file upload', () => {
-		spyOn(component.fileHtml, 'click');
+		vi.spyOn(component.fileHtml, 'click')
 		component.userFile();
 		expect(component.fileHtml.click).toHaveBeenCalled();
 	});
 
 	it('should send form data', () => {
-		spyOn(component.action, 'emit');
+		vi.spyOn(component.action, 'emit').mockImplementation(() => { });
 		component.formGroup.setValue({
 			title: 'Test Title',
 			content: 'Test Content',
@@ -94,17 +104,21 @@ describe('NoteBaseEditComponent', () => {
 		});
 	});
 
-	// it('should select file and set image value', () => {
-	// 	const file = new File([''], 'test.jpg');
-	// 	const event = { target: { files: [file] } } as unknown as Event;
-	// 	const reader = new FileReader();
-	// 	spyOn(reader, 'readAsDataURL');
-	// 	spyOn(reader, 'onload').and.callFake(() => {
-	// 		component.formGroup.controls.image.setValue('data:image/jpeg;base64,');
-	// 	});
-	// 	component.userSelectFile(event);
-	// 	expect(component.formGroup.controls.image.value).toBe('data:image/jpeg;base64,');
-	// });
+	it('should select file and set image value', async () => {
+		const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+		// 使用真實的 input 元素，才能通過 instanceof HTMLInputElement 判斷
+		const input = document.createElement('input');
+		input.type = 'file';
+		Object.defineProperty(input, 'files', { value: [file] });
+		const event = { target: input } as unknown as Event;
+
+		component.userSelectFile(event);
+
+		// FileReader 為非同步讀取，等待 onload 寫入表單
+		await vi.waitFor(() => {
+			expect(component.formGroup.controls.image.value).toBe('data:image/jpeg;base64,dGVzdA==');
+		});
+	});
 
 	it('should remove file', () => {
 		component.userRemoveFile();
@@ -113,15 +127,22 @@ describe('NoteBaseEditComponent', () => {
 	});
 
 	it('should remove tag', () => {
-		component.tagList = ['tag1', 'tag2'];
+		component.formGroup.setValue({
+			title: 'Test Title',
+			content: 'Test Content',
+			date: '2023-01-01',
+			image: 'test.jpg',
+			tag: ['tag1', 'tag2']
+		});
+
 		component.userRemoveTag(0);
-		expect(component.tagList).toEqual(['tag2']);
+		expect(component.formGroup.controls.tag.value).toEqual(['tag2']);
 	});
 
 	it('should add tag', () => {
-		const event = { value: 'newTag', chipInput: { clear: () => {} } } as MatChipInputEvent;
+		const event = { value: 'newTag', chipInput: { clear: () => { } } } as MatChipInputEvent;
 		component.userAddTag(event);
-		expect(component.tagList).toContain('newTag');
+		expect(component.formGroup.controls.tag.value).toContain('newTag');
 	});
 
 	it('should trim empty data', () => {
@@ -136,7 +157,6 @@ describe('NoteBaseEditComponent', () => {
 		expect(trimmedData).toEqual({
 			title: 'Test Title',
 			date: '2023-01-01',
-			content: ''
 		});
 	});
 });

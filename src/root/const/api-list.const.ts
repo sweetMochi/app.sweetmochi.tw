@@ -10,5 +10,5 @@ export const apiList = {
 	/** 修改接口 */
 	notePatch: '/data/note/patch',
 	/** 刪除接口 */
-	noteDelete: '/data/note/Delete'
+	noteDelete: '/data/note/delete'
 };

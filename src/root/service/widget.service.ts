@@ -9,7 +9,7 @@ import { snackBarFadeoutTime } from '../const';
 /**
  * 通用元件
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class WidgetService {
 	dialog = inject(MatDialog);
 	matSnackBar = inject(MatSnackBar);
@@ -32,7 +32,7 @@ export class WidgetService {
 
 		// 關注關閉事件
 		dialogRef.afterClosed().subscribe(
-			(result:boolean) => {
+			(result: boolean) => {
 				// 如果關閉有回傳值
 				if (result === true) {
 					// 確認回調
@@ -49,11 +49,11 @@ export class WidgetService {
 	}
 
 
-    /**
-     * 提醒
-     * @param msg 訊息
-     * @param btnName 按鈕名稱
-     */
+	/**
+	 * 提醒
+	 * @param msg 訊息
+	 * @param btnName 按鈕名稱
+	 */
 	snackBar(msg = '', btnName = 'OK'): void {
 
 		if (msg === '') {

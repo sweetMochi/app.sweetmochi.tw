@@ -3,12 +3,11 @@ import { MatSidenav } from '@angular/material/sidenav'
 import { NavigationEnd } from '@angular/router'
 import { filter } from 'rxjs'
 import { RootComponent } from '../root'
-import { appSetImport, appSetProvider } from './app.const'
+import { appSetImport } from './app.const'
 import { NavList } from './app.type'
 
 @Component({
 	selector: 'app-root',
-	providers: appSetProvider,
 	imports: appSetImport,
 	templateUrl: './app.component.html',
 	changeDetection: ChangeDetectionStrategy.Eager,
