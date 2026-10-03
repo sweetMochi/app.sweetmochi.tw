@@ -1,87 +1,72 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Validators } from '@angular/forms';
-import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { dateFormats, HttpMothod, RootModule } from '../../../../../root';
-import { FormComponent } from '../../../../base';
-import { NoteData, NoteKey, NoteValidationErrors } from '../note-base.type';
-
-
+import {
+	Component,
+	ElementRef,
+	EventEmitter,
+	Input,
+	Output,
+	ViewChild,
+	ChangeDetectionStrategy,
+} from '@angular/core'
+import { Validators } from '@angular/forms'
+import { provideMomentDateAdapter } from '@angular/material-moment-adapter'
+import { MatChipInputEvent } from '@angular/material/chips'
+import { MatDatepickerInputEvent } from '@angular/material/datepicker'
+import { dateFormats, HttpMothod, RootModule } from '../../../../../root'
+import { FormComponent } from '../../../../base'
+import { NoteData, NoteKey, NoteValidationErrors } from '../note-base.type'
 
 /**
  * 筆記編輯
  */
 @Component({
 	selector: 'note-base-edit',
-	providers: [
-		provideMomentDateAdapter(dateFormats),
-	],
-	imports: [
-		RootModule
-	],
+	providers: [provideMomentDateAdapter(dateFormats)],
+	imports: [RootModule],
 	templateUrl: './note-base-edit.component.html',
-	styleUrl: './note-base-edit.component.less'
+	changeDetection: ChangeDetectionStrategy.Eager,
+	styleUrl: './note-base-edit.component.less',
 })
 export class NoteBaseEditComponent extends FormComponent {
-	@ViewChild('fileUpload') fileUpload!: ElementRef;
+	@ViewChild('fileUpload') fileUpload!: ElementRef
 
 	/** 傳入資料 */
 	@Input() item: NoteData = {
 		id: '',
 		title: '',
 		content: '',
-		date: ''
-	};
+		date: '',
+	}
 
 	/** 卡牌模式 */
-	@Input() type: HttpMothod = 'post';
+	@Input() type: HttpMothod = 'post'
 
 	/** 送出回調 */
-	@Output() action = new EventEmitter<NoteData>();
+	@Output() action = new EventEmitter<NoteData>()
 
 	/** 錯誤回調 */
-	@Output() error = new EventEmitter();
+	@Output() error = new EventEmitter()
 
 	/** 標籤 */
-	tagList: string[] = [];
+	tagList: string[] = []
 
 	/** 驗證表單 */
-	formGroup = this.formBuilder.group(
-		{
-			/** 標題 */
-			title: [
-				'',
-				[Validators.required]
-			],
-			/** 內容 */
-			content: [
-				'',
-				[Validators.required]
-			],
-			/** 日期 */
-			date: [
-				'',
-				[Validators.required]
-			],
-			/** 圖片 */
-			image: [
-				''
-			],
-			/** 標籤 */
-			tag: [
-				[] as string[]
-			]
-		}
-	);
-
+	formGroup = this.formBuilder.group({
+		/** 標題 */
+		title: ['', [Validators.required]],
+		/** 內容 */
+		content: ['', [Validators.required]],
+		/** 日期 */
+		date: ['', [Validators.required]],
+		/** 圖片 */
+		image: [''],
+		/** 標籤 */
+		tag: [[] as string[]],
+	})
 
 	init(): void {
-
 		// 如果有傳入筆記序號
 		if (this.item.id) {
-
-			this.tagList = this.item.tag || [];
+			this.tagList = this.item.tag || []
 
 			// 設定表單預設值
 			this.formGroup.setValue({
@@ -89,78 +74,65 @@ export class NoteBaseEditComponent extends FormComponent {
 				content: this.item.content,
 				date: this.item.date,
 				image: this.item.image || '',
-				tag: this.item.tag || []
-			});
+				tag: this.item.tag || [],
+			})
 		}
-
 	}
-
 
 	/**
 	 * 表單錯誤
 	 * @param key 欄位
 	 */
 	formError(key: NoteKey): NoteValidationErrors | null | undefined {
-		return this.formGroup.get(key)?.errors;
+		return this.formGroup.get(key)?.errors
 	}
-
 
 	/**
 	 * 更新日期
 	 * @param data 日期輸入物件
 	 */
 	userDate(data: MatDatepickerInputEvent<moment.Moment>): void {
-
 		// 取得日期物件
-		let dateObj = data.value;
+		let dateObj = data.value
 
 		// 轉換日期格式
-		let val = dateObj?.format(dateFormats.parse.dateInput);
+		let val = dateObj?.format(dateFormats.parse.dateInput)
 
 		// 設定日期數值
-		this.formGroup.controls.date.setValue(val || '');
-
+		this.formGroup.controls.date.setValue(val || '')
 	}
-
 
 	/**
 	 * 返回檔案 input HTML 結構
 	 */
 	get fileHtml(): HTMLInputElement {
-		return this.fileUpload.nativeElement;
+		return this.fileUpload.nativeElement
 	}
-
 
 	/**
 	 * 觸發上傳檔案事件
 	 */
 	userFile(): void {
-
 		if (!this.fileHtml) {
-			return;
+			return
 		}
 
 		// 觸發檔案上傳
-		this.fileHtml.click();
-
+		this.fileHtml.click()
 	}
-
 
 	/**
 	 * 送出資料
 	 */
 	userSend(): void {
-
 		// 表單驗證未通過
 		if (this.formGroup.invalid) {
-			return;
+			return
 		}
 
 		// 送出回調
-		this.action.emit(this.rqData());
-
+		this.action.emit(this.rqData())
 	}
-
 
 	/**
 	 * 請求資料
@@ -171,10 +143,9 @@ export class NoteBaseEditComponent extends FormComponent {
 			content: this.formGroup.value.content || '',
 			date: this.formGroup.value.date || '',
 			image: this.formGroup.value.image || '',
-			tag: this.tagList
-		});
+			tag: this.tagList,
+		})
 	}
-
 
 	/**
 	 * 選擇上傳檔案
@@ -182,32 +153,28 @@ export class NoteBaseEditComponent extends FormComponent {
 	 */
 	userSelectFile(event: Event): void {
 		if (event.target instanceof HTMLInputElement) {
-			let file: File = event.target.files![0];
-			let reader = new FileReader();
-			reader.readAsDataURL(file);
+			let file: File = event.target.files![0]
+			let reader = new FileReader()
+			reader.readAsDataURL(file)
 			reader.onload = () => {
-				this.formGroup.controls.image.setValue(reader.result as string);
-			};
+				this.formGroup.controls.image.setValue(reader.result as string)
+			}
 		}
 	}
-
 
 	/**
 	 * 使用者移除上傳檔案
 	 */
 	userRemoveFile(): void {
-
 		if (!this.fileHtml) {
-			return;
+			return
 		}
 
 		// 清空上傳檔案
-		this.fileHtml.value = '';
+		this.fileHtml.value = ''
 		// 清除表單輸入
-		this.formGroup.controls.image.setValue('');
-
+		this.formGroup.controls.image.setValue('')
 	}
-
 
 	/**
 	 * 移除標籤
@@ -215,29 +182,27 @@ export class NoteBaseEditComponent extends FormComponent {
 	 */
 	userRemoveTag(i: number): void {
 		if (i < 0) {
-			return;
+			return
 		}
 
-		this.tagList.splice(i, 1);
+		this.tagList.splice(i, 1)
 	}
-
 
 	/**
 	 * 增加標籤
 	 * @param event 標籤事件
 	 */
 	userAddTag(event: MatChipInputEvent): void {
-		let value = (event.value || '').trim();
+		let value = (event.value || '').trim()
 
 		// 如果有輸入值
 		if (value) {
-			this.tagList.push(value);
+			this.tagList.push(value)
 		}
 
 		// 清除輸入的標籤文字
-		event.chipInput!.clear();
+		event.chipInput!.clear()
 	}
-
 
 	/**
 	 * 刪除空白資料
@@ -246,23 +211,13 @@ export class NoteBaseEditComponent extends FormComponent {
 	rqDataTrimEmpty(data: NoteData): NoteData {
 		// 遞迴送出資料
 		for (let key in data) {
-			let target = data[key as keyof NoteData];
+			let target = data[key as keyof NoteData]
 			// 如果資料為空或是沒有數量時
-			if (
-				target === ''
-				||
-				target === null
-				||
-				target === undefined
-				||
-				!target?.length
-			) {
+			if (target === '' || target === null || target === undefined || !target?.length) {
 				// 刪除該欄位資料
-				delete data[key as keyof NoteData];
+				delete data[key as keyof NoteData]
 			}
 		}
-		return data;
+		return data
 	}
-
-
 }
