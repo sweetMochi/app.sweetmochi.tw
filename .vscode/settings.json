@@ -1,0 +1,10 @@
+{
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+
+	// JSON / JSONC（tsconfig、.vscode 設定檔）同樣交由 Prettier 排版
+	"[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+	// Markdown 保留行尾空白換行，不自動排版
+	"[markdown]": { "editor.formatOnSave": false }
+}
