@@ -70,7 +70,7 @@
 						aria-label="Enter reactive form keywords"
 						formControlName="tag"
 					>
-						@for (tag of this.formGroup.value.tag; track tag; let index = $index) {
+						@for (tag of formGroup.value.tag; track tag; let index = $index) {
 							<mat-chip-row (removed)="userRemoveTag(index)">
 								{{ tag }}
 								<button matChipRemove aria-label="'remove reactive form' + keyword">
