@@ -1,4 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core'
+import { MatButton } from '@angular/material/button'
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog'
 
 /**
@@ -6,7 +7,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog'
  */
 @Component({
 	selector: 'app-popup-confirm',
-	imports: [MatDialogModule],
+	imports: [MatButton, MatDialogModule],
 	templateUrl: './popup-confirm.component.html',
 	changeDetection: ChangeDetectionStrategy.Eager,
 	styleUrl: './popup-confirm.component.less',

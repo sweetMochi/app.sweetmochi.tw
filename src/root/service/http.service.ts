@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, EMPTY, retry, throwError } from 'rxjs';
-import { apiStatus, apiUrl, httpRetryTimes } from '../const';
-import { ApiKey, DataApi } from '../type';
+import { catchError, EMPTY, retry, RetryConfig, throwError, timer } from 'rxjs';
+import { apiStatus, apiUrl, httpRetryTimes, httpRetryStatus, httpRetryMethods, httpRetryDelay } from '../const';
+import { ApiKey, DataApi, HttpMothod } from '../type';
 import { WidgetService } from './widget.service';
 
 
@@ -17,6 +17,26 @@ export class HttpService {
 
 	/** 儲存 API Key */
 	private apiKeySave = '';
+
+
+	/**
+	 * 重試設定
+	 * @param method HTTP 方法
+	 */
+	private retryConfig(method: HttpMothod): RetryConfig {
+		return {
+			// 不可重試的方法次數為 0，不會重試
+			count: httpRetryMethods.includes(method) ? httpRetryTimes : 0,
+			delay: (error, retryCount) => {
+				// 不是 HTTP 錯誤，或不是暫時性錯誤，直接拋出
+				if (!(error instanceof HttpErrorResponse) || !httpRetryStatus.includes(error.status)) {
+					return throwError(() => error);
+				}
+				// 重試等待的時間加倍（500ms → 1s → 2s）
+				return timer(httpRetryDelay * 2 ** (retryCount - 1));
+			}
+		};
+	}
 
 
 	/**
@@ -70,40 +90,46 @@ export class HttpService {
 				responseType: 'json'
 			}
 		).pipe(
-			retry(httpRetryTimes),
+			retry(this.retryConfig('get')),
 			catchError(this.handleError)
 		);
 	}
 
 
 	/**
-	 * 接口 get 方法
+	 * 接口方法
 	 * @param url 網址
 	 * @param rq 請求資料
 	 * @param action 回傳資料
-	 * @param reject 回傳錯誤
+	 * @param cancel 回傳錯誤
 	 */
-	get<T, U = {} | null>(
+	request<T, U = {} | null>(
+		method: HttpMothod,
 		url: string,
 		rq: U,
 		action: (data: T) => void,
 		cancel?: (data: DataApi) => void
 	): void {
-		this.http.get<DataApi>(
+
+		this.http.request<DataApi>(
+			method,
 			url,
 			{
 				// 固定回傳 json 格式
 				responseType: 'json',
 				// 如果有請求參數則傳入請求參數
-				params: rq ? rq : {}
+				body: rq ?? undefined
 			}
 		).pipe(
-			retry(httpRetryTimes),
-			catchError(data => {
+			retry(this.retryConfig(method)),
+			// 可能是 HttpErrorResponse 或是 TypeError
+			catchError((data: unknown) => {
+				// 保留原始錯誤供除錯
+				console.error(`Request failed: ${method.toUpperCase()} ${url}`, data);
 				// 提醒回調方法
 				this.cancelAction(apiStatus.connectFailure, cancel);
-				// 詳細錯誤
-				return throwError(() => new Error(data));
+				// 錯誤已處理，結束串流
+				return EMPTY;
 			})
 		).subscribe(res => {
 

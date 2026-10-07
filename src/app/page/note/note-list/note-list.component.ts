@@ -24,7 +24,7 @@ export class AppNoteListComponent extends NoteBaseComponent {
 	 * 取得筆記列表
 	 */
 	updateList(): void {
-		super.httpService.get<NoteData[]>(apiList.noteGet, null, (data) => (this.list = data))
+		super.httpService.request<NoteData[]>('get', apiList.note, null, (data) => (this.list = data))
 	}
 
 	/**
@@ -32,7 +32,7 @@ export class AppNoteListComponent extends NoteBaseComponent {
 	 * @param id 序號
 	 */
 	userDelete(id: string): void {
-		super.httpService.get(`${apiList.noteDelete}/${id}`, null, () => {
+		super.httpService.request('delete', `${apiList.note}/${id}`, null, () => {
 			// 顯示刪除成功
 			super.widgetService.snackBar('Delete successful')
 			// 更新列表

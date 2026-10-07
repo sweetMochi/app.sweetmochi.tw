@@ -11,7 +11,7 @@ import { Validators } from '@angular/forms'
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter'
 import { MatChipInputEvent } from '@angular/material/chips'
 import { MatDatepickerInputEvent } from '@angular/material/datepicker'
-import { dateFormats, HttpMothod, RootModule } from '@/root'
+import { dateFormats, RootModule } from '@/root'
 import { FormComponent } from '@/app/base'
 import { NoteData, NoteKey, NoteValidationErrors } from '../note-base.type'
 
@@ -36,9 +36,6 @@ export class NoteBaseEditComponent extends FormComponent {
 		content: '',
 		date: '',
 	}
-
-	/** 卡牌模式 */
-	@Input() type: HttpMothod = 'post'
 
 	/** 送出回調 */
 	@Output() action = new EventEmitter<NoteData>()

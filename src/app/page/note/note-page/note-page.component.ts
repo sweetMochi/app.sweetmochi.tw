@@ -32,7 +32,7 @@ export class AppNotePageComponent extends NoteBaseComponent {
 		// 如果從網址有取得 ID
 		if (this.id) {
 			// 設定資料為修改類型
-			this.type = 'patch'
+			this.type = 'put'
 			// 依照 ID 取得卡牌資料
 			this.getNote(this.id)
 		}
@@ -43,8 +43,9 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 * @param id 序號
 	 */
 	getNote(id: string): void {
-		super.httpService.get<NoteData>(
-			`${apiList.noteGet}/${id}`,
+		super.httpService.request<NoteData>(
+			'get',
+			`${apiList.note}/${id}`,
 			null,
 			(data) => (this.data = data),
 			(status) => {
@@ -62,8 +63,8 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 */
 	userAction(data: NoteData): void {
 		// 如果類型為修改
-		if (this.type === 'patch') {
-			this.cardPatch(data)
+		if (this.type === 'put') {
+			this.cardPut(data)
 		} else {
 			this.cardPost(data)
 		}
@@ -74,7 +75,7 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 * @param data 筆記資料
 	 */
 	cardPost(data: NoteData): void {
-		super.httpService.get(apiList.notePost, data, () => {
+		super.httpService.request<NoteData>('post', apiList.note, data, () => {
 			// 顯示新增成功
 			super.widgetService.snackBar('Create successful')
 			// 返回列表頁
@@ -86,8 +87,8 @@ export class AppNotePageComponent extends NoteBaseComponent {
 	 * 卡牌修改
 	 * @param data 筆記資料
 	 */
-	cardPatch(data: NoteData): void {
-		super.httpService.get(`${apiList.notePatch}/${this.id}`, data, () => {
+	cardPut(data: NoteData): void {
+		super.httpService.request<NoteData>('put', `${apiList.note}/${this.id}`, data, () => {
 			// 顯示新增成功
 			super.widgetService.snackBar('Edit successful')
 			// 返回列表頁
