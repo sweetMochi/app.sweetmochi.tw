@@ -6,7 +6,7 @@ import { HttpMothod } from '../type';
 export const apiUrl = 'https://app.sweetmochi.tw/api';
 
 /** Youtube API */
-export const apiYoutube = 'https://youtube.googleapis.com/youtube/v3/videos';
+export const apiYoutube = `${apiUrl}/youtube/`;
 
 /**
  * 日期格式化

@@ -71,6 +71,21 @@
 └── styles.less 樣式表
 ```
 
+## 文件圖檔
+
+`/docs` 存放 GitHub 渲染本文件 Mermaid 圖表的結果，提供 PNG 與 SVG 兩種格式，方便在不支援 Mermaid 的環境檢視
+
+```
+📁 docs
+├── component-inheritance 功能邏輯（元件繼承）
+├── root-dependency 底層配置（服務依賴）
+└── 📁 note 筆記本功能循序圖
+    ├── create-sequence 新增
+    ├── delete-sequence 刪除
+    ├── update-sequence 修改
+    └── read-sequence 查詢
+```
+
 ## 底層配置
 
 ```mermaid

@@ -2,14 +2,6 @@
 
 
 /**
- * API 型別
- */
-export interface ApiKey {
-	/** API Key */
-	apiKey: string;
-}
-
-/**
  * 後端 API 格式
  */
 export interface DataApi {

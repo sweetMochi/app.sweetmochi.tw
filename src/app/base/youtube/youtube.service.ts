@@ -2,8 +2,8 @@
 
 import { Injectable } from '@angular/core';
 import { catchError, EMPTY } from 'rxjs';
-import { apiYoutube, AppRoot, RootService } from '../../../root';
-import { YouTubeThumbnailList } from './youtube.type';
+import { apiYoutube, AppRoot, DataApi, RootService } from '../../../root';
+import { ApiYoutubeVideo, YouTubeThumbnailList } from './youtube.type';
 import { youtubeThumbnailHost, youtubeUrlShort } from './youtube.const';
 
 
@@ -26,7 +26,7 @@ export class YoutubeService extends RootService {
 	};
 
 	/** 影片暫存資料 */
-	private videoSave: GoogleApiYouTubeVideoResource | undefined;
+	private videoSave: ApiYoutubeVideo | undefined;
 
 
 
@@ -71,7 +71,7 @@ export class YoutubeService extends RootService {
 	/**
 	 * 取得影片暫存資料
 	 */
-	getVideoSave(): GoogleApiYouTubeVideoResource | undefined {
+	getVideoSave(): ApiYoutubeVideo | undefined {
 		return this.videoSave;
 	}
 
@@ -82,24 +82,19 @@ export class YoutubeService extends RootService {
 	 */
 	async thumbnailCheck(id: string) {
 
-		// 取得 API key
-		let key = await this.httpService.apiKey();
-
 		return new Promise<YouTubeThumbnailList>((resolve, reject) => {
 
 			// 建構請求資料
 			let params = new URLSearchParams(
 				{
 					id,
-					key,
-					part: 'snippet'
 				}
 			);
 
 			let url = new URL(`${apiYoutube}?${params}`);
 
-			// 取得 Youtube 回傳 API 資料
-			this.httpService.getJson<GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>>(
+			// 取得主機 YouTube API 回傳資料
+			this.httpService.getJson<DataApi>(
 				url.toString()
 			).pipe(
 				catchError(
@@ -110,21 +105,23 @@ export class YoutubeService extends RootService {
 						return EMPTY;
 					}
 				)
-			).subscribe(data => {
+			).subscribe(res => {
 
-				// 如果沒有回傳資料
-				if (!data.items.length) {
+				// 如果有錯誤代碼或沒有回傳資料
+				if (res.code !== '' || !res.data) {
 					reject(new Error('YouTube video not available'));
 					return;
 				}
 
+				let video: ApiYoutubeVideo = res.data;
+
 				// 依照預覽圖排序由大到小，尋找 API 中對應的縮圖
-				let key = this.thumbnailList.find(item => data.items[0].snippet.thumbnails[item]);
+				let key = this.thumbnailList.find(item => video.thumbnails?.[item]);
 
 				// 如果有找到縮圖
 				if (key) {
 					// 暫存縮圖資料
-					this.videoSave = data.items[0];
+					this.videoSave = video;
 					resolve(key);
 					return;
 				}

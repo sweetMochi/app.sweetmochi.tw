@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, EMPTY, retry, RetryConfig, throwError, timer } from 'rxjs';
-import { apiStatus, apiUrl, httpRetryTimes, httpRetryStatus, httpRetryMethods, httpRetryDelay } from '../const';
-import { ApiKey, DataApi, HttpMothod } from '../type';
+import { apiStatus, httpRetryTimes, httpRetryStatus, httpRetryMethods, httpRetryDelay } from '../const';
+import { DataApi, HttpMothod } from '../type';
 import { WidgetService } from './widget.service';
 
 
@@ -14,9 +14,6 @@ import { WidgetService } from './widget.service';
 export class HttpService {
 	private widgetService = inject(WidgetService);
 	private http = inject(HttpClient);
-
-	/** 儲存 API Key */
-	private apiKeySave = '';
 
 
 	/**
@@ -36,46 +33,6 @@ export class HttpService {
 				return timer(httpRetryDelay * 2 ** (retryCount - 1));
 			}
 		};
-	}
-
-
-	/**
-	 * 修改 API 欄位
-	 */
-	editApiKey(api: string): void {
-		this.apiKeySave = api;
-	}
-
-
-	/**
-	 * 取得 API KEY
-	 * @param url 網址
-	 */
-	apiKey() {
-		return new Promise<string>((resolve, reject) => {
-
-			// 如果已經有 API Key
-			if (this.apiKeySave) {
-				resolve(this.apiKeySave);
-				return;
-			}
-
-			// 沒有的話則嘗試取得 API Key
-			this.getJson<ApiKey>(`${apiUrl}/`).pipe(
-				// 例外處理
-				catchError(
-					(error: HttpErrorResponse) => {
-						reject(error);
-						return EMPTY;
-					}
-				)
-			).subscribe(data => {
-				this.apiKeySave = data.apiKey;
-				resolve(data.apiKey);
-			});
-
-		});
-
 	}
 
 

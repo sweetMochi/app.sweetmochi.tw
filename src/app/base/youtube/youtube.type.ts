@@ -7,6 +7,17 @@ export type YouTubeThumbnailList = keyof GoogleApiYouTubeVideoResource['snippet'
 
 
 /**
+ * 主機 YouTube API 回傳的影片資料
+ */
+export interface ApiYoutubeVideo {
+	/** 影片標題 */
+	title: string;
+	/** 各尺寸縮圖，影片沒有的尺寸不會回傳 */
+	thumbnails: Partial<GoogleApiYouTubeVideoResource['snippet']['thumbnails']>;
+}
+
+
+/**
  * Youtube 錯誤型別
  *
  *      invalidYouTubeId: 無效的 YouTube ID
@@ -23,5 +34,5 @@ export type YoutubeValidationErrorsType = 'invalidYouTubeId' | 'invalidYouTubeUr
  * Youtube 驗證錯誤格式
  */
 export type YoutubeValidationErrors<T = string> = {
-    [key in YoutubeValidationErrorsType]?: T;
+	[key in YoutubeValidationErrorsType]?: T;
 }

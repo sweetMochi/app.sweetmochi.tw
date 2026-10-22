@@ -120,7 +120,7 @@ export class AppYoutubeThumbnailComponent extends FormComponent {
 		this.shortUrl = `${youtubeUrlShort}/${id}`
 		this.webUrl = `${youtubeUrl}/watch?v=${id}`
 
-		this.videoTitle = this.youtubeService.getVideoSave()?.snippet.title || ''
+		this.videoTitle = this.youtubeService.getVideoSave()?.title || ''
 	}
 
 	/**

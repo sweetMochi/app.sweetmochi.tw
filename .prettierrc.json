@@ -2,5 +2,14 @@
 	"semi": false,
 	"singleQuote": true,
 	"printWidth": 100,
-	"plugins": ["prettier-plugin-tailwindcss"]
+	"plugins": ["@prettier/plugin-php", "prettier-plugin-tailwindcss"],
+	"overrides": [
+		{
+			"files": "*.php",
+			"options": {
+				"phpVersion": "7.0",
+				"trailingCommaPHP": true
+			}
+		}
+	]
 }

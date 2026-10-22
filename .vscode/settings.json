@@ -5,6 +5,9 @@
 	// JSON / JSONC（tsconfig、.vscode 設定檔）同樣交由 Prettier 排版
 	"[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
 
+	// PHP 透過 @prettier/plugin-php 排版，避免被其他 PHP 擴充套件搶走
+	"[php]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
 	// Markdown 保留行尾空白換行，不自動排版
 	"[markdown]": { "editor.formatOnSave": false }
 }

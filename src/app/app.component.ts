@@ -35,11 +35,6 @@ export class AppComponent extends RootComponent {
 	]
 
 	init(): void {
-		// 取得 API Key 並進行例外處理
-		this.httpService.apiKey().catch(() => {
-			this.widgetService.snackBar('Init error')
-		})
-
 		// 關注路由事件
 		this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e) => {
 			// 關閉導覽列

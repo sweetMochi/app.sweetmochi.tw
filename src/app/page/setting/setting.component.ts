@@ -37,12 +37,5 @@ export class AppSettingComponent extends FormComponent {
 			key,
 			this.formGroup.controls[key as 'youTubeOffline' | 'apiOffline'].value || false,
 		)
-
-		// 如果為設定 API 離線模式
-		// 並且離線模式設定為 true
-		if (key === 'apiOffline' && this.formGroup.controls.apiOffline) {
-			// 清空 API 設定
-			this.httpService.editApiKey('')
-		}
 	}
 }
