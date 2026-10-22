@@ -8,9 +8,12 @@ import {
 	ChangeDetectionStrategy,
 } from '@angular/core'
 import { Validators } from '@angular/forms'
-import { provideMomentDateAdapter } from '@angular/material-moment-adapter'
+import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter'
+import { MAT_DATE_LOCALE } from '@angular/material/core'
 import { MatChipInputEvent } from '@angular/material/chips'
 import { MatDatepickerInputEvent } from '@angular/material/datepicker'
+import { formatISO } from 'date-fns'
+import { enUS } from 'date-fns/locale'
 import { dateFormats, RootModule } from '@/root'
 import { FormComponent } from '@/app/base'
 import { NoteData, NoteKey, NoteValidationErrors } from '../note-base.type'
@@ -20,7 +23,11 @@ import { NoteData, NoteKey, NoteValidationErrors } from '../note-base.type'
  */
 @Component({
 	selector: 'note-base-edit',
-	providers: [provideMomentDateAdapter(dateFormats)],
+	providers: [
+		provideDateFnsAdapter(dateFormats),
+		// date-fns 轉接器需要 Locale 物件，不接受語系字串
+		{ provide: MAT_DATE_LOCALE, useValue: enUS },
+	],
 	imports: [RootModule],
 	templateUrl: './note-base-edit.component.html',
 	changeDetection: ChangeDetectionStrategy.Eager,
@@ -84,15 +91,15 @@ export class NoteBaseEditComponent extends FormComponent {
 	 * 更新日期
 	 * @param data 日期輸入物件
 	 */
-	userDate(data: MatDatepickerInputEvent<moment.Moment>): void {
+	userDate(data: MatDatepickerInputEvent<Date>): void {
 		// 取得日期物件
 		let dateObj = data.value
 
-		// 轉換日期格式
-		let val = dateObj?.format(dateFormats.parse.dateInput)
+		// 轉換為 yyyy-MM-dd 格式
+		let val = dateObj ? formatISO(dateObj, { representation: 'date' }) : ''
 
 		// 設定日期數值
-		this.formGroup.controls.date.setValue(val || '')
+		this.formGroup.controls.date.setValue(val)
 	}
 
 	/**

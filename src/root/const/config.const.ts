@@ -9,17 +9,17 @@ export const apiUrl = 'https://app.sweetmochi.tw/api';
 export const apiYoutube = `${apiUrl}/youtube/`;
 
 /**
- * 日期格式化
+ * 日期格式化（date-fns 格式）
  */
 export const dateFormats: MatDateFormats = {
 	parse: {
-		dateInput: 'YYYY-MM-DD',
+		dateInput: ['yyyy-MM-dd', 'yyyy/MM/dd'],
 	},
 	display: {
-		dateInput: 'YYYY/MM/DD',
-		monthYearLabel: 'YYYY',
-		dateA11yLabel: 'LL',
-		monthYearA11yLabel: 'YYYY',
+		dateInput: 'yyyy/MM/dd',
+		monthYearLabel: 'yyyy',
+		dateA11yLabel: 'PPP',
+		monthYearA11yLabel: 'yyyy',
 	},
 };
 

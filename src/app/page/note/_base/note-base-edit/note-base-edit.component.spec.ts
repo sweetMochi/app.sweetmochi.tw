@@ -4,7 +4,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { provideRouter } from '@angular/router';
-import moment from 'moment';
 
 import { NoteBaseEditComponent } from './note-base-edit.component';
 
@@ -56,7 +55,7 @@ describe('NoteBaseEditComponent', () => {
 	});
 
 	it('should update date', () => {
-		const event = { value: moment('2023-01-01') } as MatDatepickerInputEvent<moment.Moment>;
+		const event = { value: new Date(2023, 0, 1) } as MatDatepickerInputEvent<Date>;
 		component.userDate(event);
 		expect(component.formGroup.controls.date.value).toBe('2023-01-01');
 	});
