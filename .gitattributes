@@ -1,0 +1,2 @@
+# 統一使用 LF，確保本地 build 與 CI（Linux）產物一致，check-deploy 比對 hash 才準確
+* text=auto eol=lf
