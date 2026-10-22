@@ -22,6 +22,19 @@ if (in_array($origin, $allowOrigins, true)) {
 
 header('Content-Type: application/json; charset=utf-8');
 
+// 設定檔少了 return 時 require 會回傳 1，讀取鍵值只會得到 null 而不會報錯
+// 金鑰為空值時 http_build_query 會略過 key 參數，Google 只會回傳難以判斷的 403
+$apiKey = is_array($config) ? $config['youtubeApiKey'] ?? '' : '';
+if (!is_string($apiKey) || $apiKey === '') {
+	error_log('YouTube API key is missing in config/google.php');
+	http_response_code(500);
+	echo json_encode([
+		'code' => '3004',
+		'desc' => 'YouTube API key not configured',
+	]);
+	exit();
+}
+
 // 驗證影片 ID 格式，避免被當成任意代理
 // ?id[]=x 會傳入陣列，strict_types 下直接交給 preg_match 會拋出 TypeError
 $id = $_GET['id'] ?? '';
@@ -39,7 +52,7 @@ $url =
 	http_build_query([
 		'id' => $id,
 		'part' => 'snippet',
-		'key' => $config['youtubeApiKey'],
+		'key' => $apiKey,
 	]);
 
 $context = stream_context_create(['http' => ['ignore_errors' => true, 'timeout' => 10]]);
@@ -53,9 +66,11 @@ $status =
 $data = $res ? json_decode($res, true) : null;
 $item = $data['items'][0] ?? null;
 
+// YouTube API 回傳非 200 錯誤代碼
 if ($status !== 200) {
 	$reason = $data['error']['errors'][0]['reason'] ?? '';
-	error_log("YouTube API {$status} {$reason}"); // 寫進 Plesk 的錯誤日誌，方便查問題
+	// 寫進 Plesk 的錯誤日誌，方便查問題
+	error_log("YouTube API {$status} {$reason}");
 	http_response_code(502);
 	echo json_encode([
 		'code' => '3003',
@@ -64,6 +79,7 @@ if ($status !== 200) {
 	exit();
 }
 
+// 沒有回傳縮圖資料
 if (!$item) {
 	echo json_encode([
 		'code' => '3002',
